@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bulaomeng.fragment.mapper.FragmentMapper">
+  <resultMap id="BaseResultMap" type="cn.bulaomeng.fragment.entity.Fragment">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="have_fragment" jdbcType="VARCHAR" property="haveFragment" />
+    <result column="exchange" jdbcType="VARCHAR" property="exchange" />
+    <result column="date" jdbcType="DATE" property="date" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, have_fragment, exchange,date
+  </sql>
+  <select id="getListByArray"  resultType="java.lang.String">
+      select name
+      from blm_view
+    <where>
+       <foreach collection="name.split(',')" item="item"  separator="or" index="index">
+         name like  '%${item}%'
+       </foreach>
+    </where>
+  </select>
+  <select id="selectByPr"  resultType="java.util.HashMap">
+    select
+     id as 编号, name as 姓名, have_fragment as 想要交换, exchange as 交换,date as 时间
+    from fragment
+  </select>
+  <select id="selectAll"  resultType="cn.bulaomeng.fragment.entity.Fragment">
+    select
+    <include refid="Base_Column_List"/>
+    from blm_view
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from fragment
+    <where>
+    <if test="name!=null and name!=''">
+      <bind name="nameLike" value="'%'+name+'%'"/>
+       and  name like  #{nameLike}
+    </if>
+    <if test="haveFragment!=null and haveFragment!=''">
+      <bind name="haveFragmentLike" value="'%'+haveFragment+'%'"/>
+      and  have_fragment like  #{haveFragmentLike}
+    </if>
+    <if test="exchange!=null and exchange!=''">
+      <bind name="exchangeLike" value="'%'+exchange+'%'"/>
+      and  exchange like  #{exchangeLike}
+    </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" statementType="CALLABLE">
+    delete from fragment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.bulaomeng.fragment.entity.Fragment" keyProperty="id" useGeneratedKeys="true">
+    insert into fragment (name,have_fragment,exchange,date)
+    values (#{name},#{haveFragment},#{exchange},now())
+    on conflict(name)
+    do update
+    set
+    have_fragment=#{haveFragment},
+    exchange=#{exchange},
+    date=now()
+  </insert>
+  <insert id="insertSelective" parameterType="cn.bulaomeng.fragment.entity.Fragment" >
+    insert into fragment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="haveFragment != null">
+        have_fragment,
+      </if>
+      <if test="exchange != null">
+        exchange,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="haveFragment != null">
+        #{haveFragment,jdbcType=VARCHAR},
+      </if>
+      <if test="exchange != null">
+        #{exchange,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.bulaomeng.fragment.entity.Fragment">
+    update fragment
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="haveFragment != null">
+        have_fragment = #{haveFragment,jdbcType=VARCHAR},
+      </if>
+      <if test="exchange != null">
+        exchange = #{exchange,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.bulaomeng.fragment.entity.Fragment">
+    update fragment
+    set name = #{name,jdbcType=VARCHAR},
+      have_fragment = #{haveFragment,jdbcType=VARCHAR},
+      exchange = #{exchange,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,29 @@
+server:
+  port: 8081
+spring:
+  mail:
+    host: smtp.qq.com
+    username: 1420408096@qq.com
+    password: byxxlzgcaozhgghh
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable:
+              true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: root
+    url: jdbc:postgresql://localhost:5432/postgres
+  freemarker:
+    template-loader-path: classpath:/templates/
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+sso:
+  cas:
+    path-url: "/ssoLogin"
+
+demo-mail.from : ${spring.mail.username}
+demo-mail.to : 956905891@qq.com

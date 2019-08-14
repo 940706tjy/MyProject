@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>不老梦碎片登记</title>
+    <style>
+        body{
+            background: url("image/yys.jpg")40% 0 no-repeat ;
+        }
+        .elegant-aero {
+            margin-left:auto;
+            margin-right:auto;
+            margin-top: 5%;
+            max-width: 500px;
+            background: url("image/1366x768.jpg")no-repeat center;
+            padding: 20px 20px 20px 20px;
+            font: 12px Arial, Helvetica, sans-serif;
+            color: #666;
+        }
+        .elegant-aero h1 {
+            font: 24px "Trebuchet MS", Arial, Helvetica, sans-serif;
+            padding: 10px 10px 10px 20px;
+            display: block;
+            background: #C0E1FF;
+            border-bottom: 1px solid #B8DDFF;
+            margin: -20px -20px 15px;
+        }
+        .elegant-aero h1>span {
+            display: block;
+            font-size: 11px;
+        }
+
+        .elegant-aero label>span {
+            float: left;
+            margin-top: 10px;
+            color: black;
+        }
+        .elegant-aero label {
+            display: block;
+            margin: 0px 0px 5px;
+        }
+        .elegant-aero label>span {
+            float: left;
+            width: 20%;
+            text-align: right;
+            padding-right: 15px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .elegant-aero input[type="text"], .elegant-aero input[type="phone"], .elegant-aero textarea, .elegant-aero select {
+            color: #888;
+            width: 70%;
+            padding: 0px 0px 0px 5px;
+            border: 1px solid #C5E2FF;
+            background: #FBFBFB;
+            outline: 0;
+            -webkit-box-shadow:inset 0px 1px 6px #ECF3F5;
+            box-shadow: inset 0px 1px 6px #ECF3F5;
+            font: 200 12px/25px Arial, Helvetica, sans-serif;
+            height: 30px;
+            line-height:15px;
+            margin: 2px 6px 16px 0px;
+        }
+        .elegant-aero textarea{
+            height:100px;
+            padding: 5px 0px 0px 5px;
+            width: 70%;
+        }
+        .elegant-aero select {
+            appearance:none;
+            -webkit-appearance:none;
+            -moz-appearance: none;
+            text-indent: 0.01px;
+            text-overflow: '';
+            width: 70%;
+        }
+        .elegant-aero .button{
+            padding: 10px 30px 10px 30px;
+            background: #66C1E4;
+            border: none;
+            color: #FFF;
+            box-shadow: 1px 1px 1px #4C6E91;
+            -webkit-box-shadow: 1px 1px 1px #4C6E91;
+            -moz-box-shadow: 1px 1px 1px #4C6E91;
+            text-shadow: 1px 1px 1px #5079A3;
+
+        }
+        .elegant-aero .button:hover{
+            background: #3EB1DD;
+        }
+        .yz{
+            text-align: center;
+        }
+        button {
+            background: #008cd5;
+            border: 0;
+            padding: 4px 15px;
+            border-radius: 3px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="elegant-aero" >
+    <form action="javascript:void(0)" id="form" class="STYLE-NAME">
+        <h1>碎片登记
+            <span>请在文本中填写具体信息</span>
+        </h1>
+        <button  style="cursor: pointer;text-align: center;margin-left: 25px" class="download" >我懒得一点点输入(点击下载模板导入)</button>
+        <p style="color: red;margin-left: 25px;font-size: 14px" id="import"><strong>导入我的信息(功能还在研发)</strong></p>
+        <input  style="cursor: pointer;text-align: center;margin-left: 25px;margin-bottom: 10px" type="file"  class="download1" >
+        <label>
+            <span>您的游戏名 :</span>
+            <input id="name" type="text" name="name" placeholder="您的游戏名" />
+            <div class="yz"></div>
+        </label>
+        <label>
+            <span>您拥有的碎片 :</span>
+            <input id="phone" type="text" name="haveFragment" placeholder="您拥有的碎片" />
+            <div class="yz"></div>
+        </label>
+        <label>
+            <span>您想要的碎片 :</span>
+            <textarea id="message" name="exchange" placeholder="您想要的碎片"></textarea>
+            <div class="yz"></div>
+        </label>
+        <label>
+            <span>您的邮箱 :</span>
+            <textarea id="email" name="email" placeholder="您的邮箱(推送用 不会记录您的邮箱)"></textarea>
+            <div class="yz"></div>
+        </label>
+        <label>
+            <div id="v_container" style="width: 150px;height: 50px;margin-left: 120px"></div>
+            <span>请输入验证码  :</span>
+            <input type="text" id="code_input" value="" placeholder="请输入验证码"/>
+            <div class="yz"></div>
+        </label>
+        <label>
+            <span>&nbsp;</span>
+            <input type="submit" class="button" value="提交"/>
+        </label>
+    </form>
+</div>
+<script src="js/gVerify.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+        $(function(){
+            var verifyCode = new GVerify("v_container");
+            $("#name").blur(getname);
+            $("#phone").blur(getem);
+            $("#message").blur(getmessage);
+            $("#code_input").blur(getv_container);
+            $(".download").click(function () {
+                location.href="../../excel/downloadModel";
+            })
+            $(".download1").click(function () {
+                location.href="../../excel/upload";
+            })
+            $("form").submit(function(){
+                var flag=true;
+                if(!getname()){
+                    flag=false;
+                }
+                if(!getem()){
+                    flag=false;
+                }
+                if(!getv_container()){
+                    flag=false;
+                }
+                if(!getmessage()){
+                    flag=false;
+                }
+                if(!getemail()){
+                    flag=false;
+                }
+                if(flag){
+                        $.ajax({
+                            type:"POST",
+                            url:"../../fragment/insert",
+                            data:$("#form").serialize(),
+                            success:function (data) {
+                                if(data==1){
+                                    alert("登记成功")
+                                }
+                                location.href="index.html"
+                            },
+                            dataType: "text"
+                        })
+                }
+                return flag;
+
+            })
+//内容
+        function getmessage(){
+            $(".yz").css("color","red");
+            var getdate=$("#message").val();
+            if(getdate==""){
+                $("#message").next().html("你不告诉大佬你想要啥，怎么去交换啊？")
+                return false;
+            }
+            $("#message").next().html("");
+            return true;
+        }
+//姓名
+        function getname(){
+            $(".yz").css("color","red");
+            var getdate=$("#name").val();
+            if(getdate==""){
+                $("#name").next().html("游戏名不能为空!")
+                return false;
+            }
+            $("#name").next().html("");
+            return true;
+        }
+//验证码
+        function getv_container(){
+            $(".yz").css("color","red");
+            var getdate=$("#code_input").val();
+            if(getdate==""){
+                $("#code_input").next().html("验证码不能为空!")
+                return false;
+            }
+
+            if(!verifyCode.validate(getdate)){
+                $("#code_input").next().html("请输入正确验证码");
+                return false;
+            }
+            $("#code_input").next().html("");
+            return true;
+        }
+//手机
+        function getem(){
+            $(".yz").css("color","red");
+            var getem=$("#phone").val();
+            var getzz= /^1(3|4|5|7|8)\d{9}$/;
+            $("#phone").next().html("");
+            if(getem==""){
+                $("#phone").next().html("不填碎片你在调戏大佬吗？！");
+                return false;
+            }
+            return true
+        }
+        //邮箱
+        function getemail(){
+            $(".yz").css("color","red");
+            var getem=$("#email").val();
+            var getzz= /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
+            $("#email").next().html("");
+            if(getem==""){
+                $("#email").next().html("不填邮箱不想让大佬联系您吗？/(ㄒoㄒ)/~~");
+                return false;
+            }
+            if(!getzz.test(getem)){
+                $("#email").next().html("请输入正确的邮箱");
+                return false;
+            }
+            return true
+        }
+
+
+    })
+</script>
+</body>
+</html>

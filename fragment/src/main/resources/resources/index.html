@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+		<title>不老梦碎片交换查询</title>
+		<style type="text/css">
+			#table table {
+				width: 100%;
+				font-size: 14px;
+				border: 1px solid #eee
+			}
+			
+			#table {
+				padding: 0 10px;
+			}
+			
+			table thead th {
+				background: #f5f5f5;
+				padding: 10px;
+				text-align: left;
+			}
+			
+			table tbody td {
+				padding: 10px;
+				text-align: left;
+				border-bottom: 1px solid #eee;
+				border-right: 1px solid #eee;
+			}
+			
+			table tbody td span {
+				margin: 0 10px;
+				cursor: pointer;
+			}
+			
+			.delete {
+				color: red;
+			}
+			
+			.edit {
+				color: #008cd5;
+			}
+			.add {
+				border: 1px solid #eee;
+				margin: 10px 0;
+				padding: 15px;
+			}
+			
+			input {
+				border: 1px solid #ccc;
+				padding: 5px;
+				border-radius: 3px;
+				margin-right: 15px;
+			}
+			[v-cloak] {
+				display:none !important;
+			}
+			button {
+				background: #008cd5;
+				border: 0;
+				padding: 4px 15px;
+				border-radius: 3px;
+				color: #fff;
+			}
+			
+			#mask {
+				background: rgba(0, 0, 0, .5);
+				width: 100%;
+				height: 100%;
+				position: fixed;
+				z-index: 4;
+				top: 0;
+				left: 0;
+			}
+			
+			.mask {
+				width: 300px;
+				height: 250px;
+				background: rgba(255, 255, 255, 1);
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				margin: auto;
+				z-index: 47;
+				border-radius: 5px;
+			}
+			
+			.title {
+				padding: 10px;
+				border-bottom: 1px solid #eee;
+			}
+			
+			.title span {
+				float: right;
+				cursor: pointer;
+			}
+			
+			.content {
+				padding: 10px;
+			}
+			
+			.content input {
+				width: 270px;
+				margin-bottom: 15px;
+			}
+		</style>
+		<style>
+			.page-bar{
+				margin:40px;
+			}
+			ul,li{
+				margin: 0px;
+				padding: 0px;
+			}
+			li{
+				list-style: none
+			}
+			.page-bar li:first-child>a {
+				margin-left: 0px
+			}
+			.page-bar a{
+				border: 1px solid #ddd;
+				text-decoration: none;
+				position: relative;
+				float: left;
+				padding: 6px 12px;
+				margin-left: -1px;
+				line-height: 1.42857143;
+				color: #337ab7;
+				cursor: pointer
+			}
+			.page-bar a:hover{
+				background-color: #eee;
+			}
+			.page-bar a.banclick{
+				cursor:not-allowed;
+			}
+			.page-bar .active a{
+				color: #fff;
+				cursor: default;
+				background-color: #337ab7;
+				border-color: #337ab7;
+			}
+			.page-bar i{
+				font-style:normal;
+				color: #d44950;
+				margin: 0px 4px;
+				font-size: 14px;
+			}
+		</style>
+	</head>
+	<body style="margin-top: 1%" >
+		<div id="table"  v-cloak>
+			<div class="add">
+				<input type="text" v-model="haveFragment" name="haveFragment" value="" placeholder="查询其他玩家拥有碎片" />
+				<input type="text" v-model="name" name="name" value="" placeholder="查询发布人" />
+				<input type="text" v-model="exchange" name="exchange" value="" placeholder="查询其他玩家想交换的碎片" />
+				<button @click="selectByfm">查询信息</button>
+			</div>
+			<button @click="adddetail" style="cursor: pointer">导出PDF格式</button>
+			<button @click="downLoadEx" style="cursor: pointer">导出EXCEL格式</button>
+			<table cellpadding="0" cellspacing="0">
+				<thead >
+					<tr >
+						<th>序号</th>
+						<th>玩家</th>
+						<th>拥有碎片</th>
+						<th>想要碎片</th>
+						<th>时间</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(item,index) in addDetail">
+						<td width="10%">{{index+1}}</td>
+						<td>{{item.name}}</td>
+						<td width="35%">{{item.haveFragment}}</td>
+						<td width="30%">{{item.exchange}}</td>
+						<!--<td width="15%">{{dateFormat(item.date)}}</td>-->
+						<td width="15%">{{item.date}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="page-bar">
+				<ul>
+					<li><a @click="pageNum=1,pageClick()">首页</a></li>
+					<li v-if="pageNum>1"><a @click="pageNum--,pageClick()">上一页</a></li>
+					<li v-if="pageNum==1"><a class="banclick">上一页</a></li>
+					<li v-for="index in indexs"  :class="{ 'active': pageNum == index}">
+						<a @click="btnClick(index)">{{ index }}</a>
+					</li>
+					<li v-if="pageNum!=pages"><a @click="pageNum++,pageClick()">下一页</a></li>
+					<li v-if="pageNum == pages"><a class="banclick">下一页</a></li>
+					<li><a>共<i>{{pages}}</i>页</a></li>
+					<li ><a @click="pageNum=pages,pageClick()">尾页</a></li>
+				</ul>
+			</div>
+			<iframe style="margin-left: 100px" src="//player.bilibili.com/player.html?aid=8403837&cid=13834566&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>		</div>
+		<script src="http://res-k12.weds.com.cn/weds/js/browser-polyfill.min.js"></script>
+		<script src="http://res-k12.weds.com.cn/weds/js/browser.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script type="text/babel">
+			var app = new Vue({
+				el: '#table',
+				data: {
+					addDetail: {},
+					editlist: false,
+					editDetail: {},
+					editid:'',
+					name:"",
+                    exchange:"",
+                    haveFragment:"",
+                    pageNum: 0,//当前页码
+                    pages:0,//总页数
+					pageSize:0 //当前页数量
+				},
+				mounted() {
+                    let vThis=this;
+                    var datas={"name":vThis.name,"exchange":vThis.exchange,
+                        "haveFragment":vThis.haveFragment};
+                    $.ajax({
+                        type:"post",
+                        contentType : "application/json",
+                        data:JSON.stringify(datas),
+                        url:"../../fragment/selectByPrimaryKey",
+                        success:function (data) {
+                            vThis.addDetail=data.list;
+                            vThis.pageNum=data.pageNum;
+                            vThis.pages=data.pages;
+                            vThis.pageSize=data.pageSize;
+                        },
+                        dataType: "json",
+                    })
+				},
+				methods: {
+                    //时间格式化函数，此处仅针对yyyy-MM-dd hh:mm:ss 的格式进行格式化
+                    dateFormat:function(time) {
+                        var date=new Date(time);
+                        var year=date.getFullYear();
+                        /* 在日期格式中，月份是从0开始的，因此要加0
+                         * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+                         * */
+                        var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+                        var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+                        var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+                        var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+                        var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+                        // 拼接
+                        return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+                    },
+                    btnClick: function(index){//页码点击事件
+                        let vThis=this;
+                        var datas={"name":vThis.name,"exchange":vThis.exchange,
+                            "haveFragment":vThis.haveFragment,"pageNum":index,"pageSize":vThis.pageSize};
+                        $.ajax({
+                            type:"post",
+                            contentType : "application/json",
+                            data:JSON.stringify(datas),
+                            url:"../../fragment/selectByPrimaryKey",
+                            success:function (data) {
+                                vThis.addDetail=data.list;
+                                vThis.pages=data.pages;
+                                vThis.pageNum=data.pageNum;
+                                vThis.pages=data.pages;
+                                vThis.pageSize=data.pageSize;
+                            },
+                            dataType: "json",
+                        })
+                    },
+                    pageClick: function(){
+                        let vThis=this;
+                        var datas={"name":vThis.name,"exchange":vThis.exchange,
+                            "haveFragment":vThis.haveFragment,"pageNum":vThis.pageNum,"pageSize":vThis.pageSize};
+                        $.ajax({
+                            type:"post",
+                            contentType : "application/json",
+                            data:JSON.stringify(datas),
+                            url:"../../fragment/selectByPrimaryKey",
+                            success:function (data) {
+                                vThis.addDetail=data.list;
+                                vThis.pages=data.pages;
+                                vThis.pageNum=data.pageNum;
+                                vThis.pages=data.pages;
+                                vThis.pageSize=data.pageSize;
+                            },
+                            dataType: "json",
+                        })
+                    },
+					//导出PDF
+					adddetail:function() {
+						location.href="../../pdf/download"
+					},
+					//导出EXCEL
+					downLoadEx:function() {
+						location.href="../../excel/downloadExcel"
+					},
+                    selectByfm:function () {
+                        let vThis=this;
+                        var datas={"name":vThis.name,"exchange":vThis.exchange,
+							"haveFragment":vThis.haveFragment};
+						$.ajax({
+							type:"post",
+                            contentType : "application/json",
+							data:JSON.stringify(datas),
+                            url:"../../fragment/selectByPrimaryKey",
+                            success:function (data) {
+                                vThis.addDetail=data.list;
+                                vThis.pages=data.pages;
+                                vThis.pageNum=data.pageNum;
+                                vThis.pages=data.pages;
+                                vThis.pageSize=data.pageSize;
+                            },
+                            dataType: "json",
+                        })
+                    }
+              },
+                computed: {
+                    indexs: function(){
+                        var left = 1;
+                        var right = this.pages;
+                        var ar = [];
+                        if(this.pages>= 5){
+                            if(this.pageNum > 3 && this.pageNum < this.pages-2){
+                                left = this.pageNum - 2
+                                right = this.pageNum + 2
+                            }else{
+                                if(this.pageNum<=3){
+                                    left = 1
+                                    right = 5
+                                }else{
+                                    right = this.pages
+                                    left = this.pages -4
+                                }
+                            }
+                        }
+                        while (left <= right){
+                            ar.push(left)
+                            left ++
+                        }
+                        return ar
+                    }
+
+                }
+			})
+		</script>
+		<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+	</body>
+
+</html>
