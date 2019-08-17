@@ -1,101 +1,216 @@
 package cn.bulaomeng.fragment.util;
 
-
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.text.StringEscapeUtils;
-
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+import org.owasp.validator.html.AntiSamy;
+import org.owasp.validator.html.CleanResults;
+import org.owasp.validator.html.Policy;
+import org.owasp.validator.html.PolicyException;
+import org.owasp.validator.html.ScanException;
+
 import java.io.*;
-import java.nio.charset.Charset;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
-    public XssHttpServletRequestWrapper(HttpServletRequest request) {
-        super(request);
-    }
 
-    @Override
-    public String getHeader(String name) {
-        return StringEscapeUtils.escapeHtml4(super.getHeader(name));
-    }
-
-    @Override
-    public String getQueryString() {
-        return StringEscapeUtils.escapeHtml4(super.getQueryString());
-    }
-
-    @Override
-    public String getParameter(String name) {
-        return StringEscapeUtils.escapeHtml4(super.getParameter(name));
-    }
-
-    @Override
-    public String[] getParameterValues(String name) {
-        String[] values = super.getParameterValues(name);
-        if(values != null) {
-            int length = values.length;
-            String[] escapseValues = new String[length];
-            for(int i = 0; i < length; i++){
-                escapseValues[i] = StringEscapeUtils.escapeHtml4(values[i]);
-            }
-            return escapseValues;
+    //AntiSamy使用的策略文件
+    private static Policy policy = null;
+    static {
+        String antiSamyPath = XssHttpServletRequestWrapper.class.getClassLoader().getResource("antisamy-querysys.xml").getFile();
+        System.out.println("policy_filepath:"+antiSamyPath);
+        if(antiSamyPath.startsWith("file")){
+            antiSamyPath = antiSamyPath.substring(6);
         }
-        return values;
+        try {
+            policy = Policy.getInstance(antiSamyPath);
+        } catch (PolicyException e) {
+            e.printStackTrace();
+        }
     }
 
+    // 存放JSON数据主体
+    private final String body;
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        String str=getRequestBody(super.getInputStream());
-        Map<String,Object> map= JSON.parseObject(str,Map.class);
-        Map<String,Object> resultMap=new HashMap<>(map.size());
-        for(String key:map.keySet()){
-            Object val=map.get(key);
-            if(map.get(key) instanceof String){
-                resultMap.put(key,StringEscapeUtils.escapeHtml4(val.toString()));
-            }else{
-                resultMap.put(key,val);
-            }
-        }
-        str=JSON.toJSONString(resultMap);
-        final ByteArrayInputStream bais = new ByteArrayInputStream(str.getBytes());
-        return new ServletInputStream() {
+        final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body.getBytes("UTF-8"));
+        ServletInputStream servletInputStream = new ServletInputStream() {
             @Override
             public int read() throws IOException {
-                return bais.read();
+                return byteArrayInputStream.read();
             }
+
             @Override
             public boolean isFinished() {
                 return false;
             }
+
             @Override
             public boolean isReady() {
                 return false;
             }
+
             @Override
             public void setReadListener(ReadListener listener) {
+
             }
         };
+        return servletInputStream;
     }
 
-    private String getRequestBody(InputStream stream) {
-        String line = "";
-        StringBuilder body = new StringBuilder();
-        int counter = 0;
+    @Override
+    public BufferedReader getReader() throws IOException {
+        return new BufferedReader(new InputStreamReader(this.getInputStream()));
+    }
 
-        // 读取POST提交的数据内容
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
+    public String getBody() {
+        return this.body;
+    }
+    /** 
+    * @Description: 将返回给过滤器的参数进行清洗 
+    * @Param: [request] 
+    * @return:  
+    * @Author: tjy
+    * @Date: 2019/8/17 
+    */ 
+    public XssHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
+        super(request);
+        StringBuffer stringBuffer = new StringBuffer();
+        BufferedReader bufferedReader = null;
         try {
-            while ((line = reader.readLine()) != null) {
-                body.append(line);
-                counter++;
+            InputStream inputStream = request.getInputStream();
+            if (inputStream != null) {
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                char[] charBuffer = new char[128];
+                int bytesRead = -1;
+                while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+                    stringBuffer.append(charBuffer, 0, bytesRead);
+                }
+            } else {
+                stringBuffer.append("");
             }
-        } catch (IOException e) {
+        } catch (IOException ex) {
+            throw ex;
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    throw ex;
+                }
+            }
+        }
+        body =cleanXSS(stringBuffer.toString());
+    }
+
+   /** 
+   * @Description: Header为空直接返回，不然进行XSS清洗 
+   * @Param: [name] 
+   * @return: java.lang.String 
+   * @Author: tjy
+   * @Date: 2019/8/17 
+   */ 
+    @Override
+    public String getHeader(String name) {
+        String value = super.getHeader(name);
+        if(StringUtils.isEmpty(value)){
+            return value;
+        }
+        else{
+            String newValue = cleanXSS(value);
+            return newValue;
+        }
+
+    }
+
+    /** 
+    * @Description: Parameter为空直接返回，不然进行XSS清洗 
+    * @Param: [name] 
+    * @return: java.lang.String 
+    * @Author: tjy
+    * @Date: 2019/8/17 
+    */ 
+    @Override
+    public String getParameter(String name) {
+        String value = super.getParameter(name);
+        if(StringUtils.isEmpty(value)){
+            return value;
+        }
+        else{
+            value = cleanXSS(value);
+            return value;
+        }
+    }
+
+   /** 
+   * @Description: 对用户输入的参数值进行XSS清洗 
+   * @Param: [name] 
+   * @return: java.lang.String[] 
+   * @Author: tjy
+   * @Date: 2019/8/17 
+   */ 
+    @Override
+    public String[] getParameterValues(String name) {
+        String[] values = super.getParameterValues(name);
+        if (values != null) {
+            int length = values.length;
+            String[] escapseValues = new String[length];
+            for (int i = 0; i < length; i++) {
+                escapseValues[i] = cleanXSS(values[i]);
+            }
+            return escapseValues;
+        }
+        return super.getParameterValues(name);
+    }
+
+
+    @SuppressWarnings("rawtypes")
+    public Map<String,String[]> getParameterMap(){
+        Map<String,String[]> request_map = super.getParameterMap();
+        Iterator iterator = request_map.entrySet().iterator();
+        System.out.println("request_map"+request_map.size());
+        while(iterator.hasNext()){
+            Map.Entry me = (Map.Entry)iterator.next();
+            //System.out.println(me.getKey()+":");
+            String[] values = (String[])me.getValue();
+            for(int i = 0 ; i < values.length ; i++){
+                System.out.println(values[i]);
+                values[i] = cleanXSS(values[i]);
+            }
+        }
+        return request_map;
+    }
+
+
+    /** 
+    * @Description: AntiSamy清洗数据 
+    * @Param: [taintedHTML] 
+    * @return: java.lang.String 
+    * @Author: tjy
+    * @Date: 2019/8/17 
+    */ 
+    private String cleanXSS(String taintedHTML) {
+        try{
+            AntiSamy antiSamy = new AntiSamy();
+            CleanResults cr = antiSamy.scan(taintedHTML, policy);//扫描
+            taintedHTML = cr.getCleanHTML();//获取清洗后的结果
+            //AntiSamy会把“&nbsp;”转换成乱码，把双引号转换成"&quot;" 先将&nbsp;的乱码替换为空，双引号的乱码替换为双引号
+            String str = StringEscapeUtils.unescapeHtml4(taintedHTML);
+            str = str.replaceAll(antiSamy.scan("&nbsp;",policy).getCleanHTML(),"");
+            str = str.replaceAll(antiSamy.scan("\"",policy).getCleanHTML(),"\"");
+            return str;
+        }catch( ScanException e) {
+            e.printStackTrace();
+        }catch( PolicyException e) {
             e.printStackTrace();
         }
-        return body.toString();
+        return taintedHTML;
     }
+
 }

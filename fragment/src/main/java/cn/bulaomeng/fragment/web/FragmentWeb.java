@@ -35,7 +35,8 @@ public class FragmentWeb {
     */ 
     @GetMapping("/go")
     @ApiOperation(value = "查询全部", notes = "")
-    public List<Fragment> getListAll(){
+    public List<Fragment> getListAll(String name){
+        System.out.println(name);
         return fragmentService.getListAll();
     }
     /** 
