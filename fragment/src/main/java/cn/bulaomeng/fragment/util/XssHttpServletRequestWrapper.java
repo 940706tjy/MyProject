@@ -73,7 +73,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         return this.body;
     }
     /** 
-    * @Description: 将返回给过滤器的参数进行清洗 
+    * @Description: 将返回给过滤器的参数进行清洗
     * @Param: [request] 
     * @return:  
     * @Author: tjy
@@ -84,10 +84,11 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         StringBuffer stringBuffer = new StringBuffer();
         BufferedReader bufferedReader = null;
         try {
+            //获得POST请求的输入流
             InputStream inputStream = request.getInputStream();
             if (inputStream != null) {
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                char[] charBuffer = new char[128];
+                char[] charBuffer = new char[1024];
                 int bytesRead = -1;
                 while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
                     stringBuffer.append(charBuffer, 0, bytesRead);
