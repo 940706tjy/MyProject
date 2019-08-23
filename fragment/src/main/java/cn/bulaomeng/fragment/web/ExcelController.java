@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@Api(description = "导出excel")
+@Api(description = "导入/出excel")
 @RequestMapping("/excel")
 public class ExcelController {
     @Autowired
@@ -126,10 +126,10 @@ public class ExcelController {
                     fragment = new Fragment();
                     //获得第 j 行
                     HSSFRow row = sheet.getRow(j);
-                    fragment.setName(row.getCell(1).getStringCellValue());
-                    fragment.setHaveFragment(row.getCell(2).getStringCellValue());
-                    fragment.setExchange(row.getCell(3).getStringCellValue());
-                    fragment.setDate(Timestamp.valueOf(row.getCell(4).getStringCellValue()));
+                    fragment.setName(row.getCell(0).getStringCellValue());
+                    fragment.setHaveFragment(row.getCell(1).getStringCellValue());
+                    fragment.setExchange(row.getCell(2).getStringCellValue());
+                    fragment.setDate(Timestamp.valueOf(row.getCell(3).getStringCellValue()));
                 }
             }
 
