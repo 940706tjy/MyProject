@@ -107,8 +107,9 @@
             <span>请在文本中填写具体信息</span>
         </h1>
         <button  style="cursor: pointer;text-align: center;margin-left: 25px" class="download" >我懒得一点点输入(点击下载模板导入)</button>
-        <p style="color: red;margin-left: 25px;font-size: 14px" id="import"><strong>导入我的信息(功能还在研发)</strong></p>
-        <input  style="cursor: pointer;text-align: center;margin-left: 25px;margin-bottom: 10px" type="file"  class="download1" >
+        <p style="color: red;margin-left: 25px;font-size: 14px" id="import"><strong>导入我的信息 ↓</strong></p>
+        <input  style="cursor: pointer;text-align: center;margin-left: 25px;margin-bottom: 10px" type="file" id="file">
+        <button  style="cursor: pointer;" class="download1" >点击上传(无需填写下方内容)</button>
         <label>
             <span>您的游戏名 :</span>
             <input id="name" type="text" name="name" placeholder="您的游戏名" />
@@ -153,8 +154,25 @@
             $(".download").click(function () {
                 location.href="../../excel/downloadModel";
             })
+            //上传excel信息文件
             $(".download1").click(function () {
-                location.href="../../excel/upload";
+                var formdata = new FormData();
+                formdata.append('file', $("#file")[0].files[0]);
+                $.ajax({
+                   url:"../../excel/import",
+                   type:"post",
+                    processData: false,
+                    contentType: false,
+                   data:formdata,
+                   success:function (data) {
+                       if(data!="success"){
+                           alert(data);
+                           location.reload();
+                       }else {
+                           location.href="index.html";
+                       }
+                   }
+               })
             })
             $("form").submit(function(){
                 var flag=true;

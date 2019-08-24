@@ -30,12 +30,14 @@ public class FragmentService {
     public int insert(Fragment fragment){
         Integer result=fragmentMapper.insert(fragment);
         if(result>0){
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(from);
-            message.setTo(fragment.getEmail()); //自己给自己发送邮件
-            message.setSubject("主题:登记成功!");
-            message.setText("请登录: http://blm.free.idcfengye.com/index.html 查看记录 和大佬们一起换取想要的式神吧!");
-            mailSender.send(message);
+            if(fragment.getEmail()!=null){
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom(from);
+                message.setTo(fragment.getEmail()); //自己给自己发送邮件
+                message.setSubject("主题:登记成功!");
+                message.setText("请登录: http://blm.free.idcfengye.com/index.html 查看记录 和大佬们一起换取想要的式神吧!");
+                mailSender.send(message);
+            }
         }
         return  result;
     }

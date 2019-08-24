@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@Api(description = "不老梦碎片接口")
+@Api(value = "不老梦碎片接口")
 @RequestMapping("/fragment")
 public class FragmentWeb {
 
@@ -33,7 +33,7 @@ public class FragmentWeb {
     * @Author: tjy
     * @Date: 2019/5/21 
     */ 
-    @GetMapping("/go")
+    @PostMapping("/go")
     @ApiOperation(value = "查询全部", notes = "")
     public List<Fragment> getListAll(String name){
         System.out.println(name);

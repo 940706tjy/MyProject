@@ -4,6 +4,7 @@ import cn.bulaomeng.fragment.entity.Fragment;
 import cn.bulaomeng.fragment.service.FragmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.IOUtils;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@Api(description = "导入/出excel")
+@Api(value = "导入/出excel")
 @RequestMapping("/excel")
 public class ExcelController {
     @Autowired
@@ -109,8 +110,9 @@ public class ExcelController {
     @ApiOperation(value = "excel导入")
     public String upload(MultipartFile file) {
         if (file==null) {
-            new Thread("文件内容为空");
+           return "文件内容为空";
         }
+        Fragment fragment = null;
         List<Fragment> list = new ArrayList<>();
         try {
             HSSFWorkbook workbook = new HSSFWorkbook(new POIFSFileSystem(file.getInputStream()));
@@ -120,23 +122,37 @@ public class ExcelController {
                 HSSFSheet sheet = workbook.getSheetAt(i);
                 //获取多少行
                 int rows = sheet.getPhysicalNumberOfRows();
-                Fragment fragment = null;
-                //遍历每一行，注意：第 0 行为标题
-                for (int j = 1; j < rows; j++) {
+                //遍历每一行，注意：第 0 行为标题 目前只取第二行
+                //for (int j = 1; j < rows; j++) {
                     fragment = new Fragment();
                     //获得第 j 行
-                    HSSFRow row = sheet.getRow(j);
+                    HSSFRow row = sheet.getRow(1);
                     fragment.setName(row.getCell(0).getStringCellValue());
-                    fragment.setHaveFragment(row.getCell(1).getStringCellValue());
-                    fragment.setExchange(row.getCell(2).getStringCellValue());
-                    fragment.setDate(Timestamp.valueOf(row.getCell(3).getStringCellValue()));
+                    fragment.setExchange(row.getCell(1).getStringCellValue());
+                    fragment.setHaveFragment(row.getCell(2).getStringCellValue());
+                    //fragment.setDate(Timestamp.valueOf(row.getCell(3).getStringCellValue()));
+                    fragment.setEmail(row.getCell(3).getStringCellValue());
+                //}
+                //已有的碎片
+                if(StringUtils.isBlank(fragment.getHaveFragment())){
+                    return "你不告诉大佬你有啥，是在搞事情吗(⊙_⊙)?";
+                }
+                //用户名
+                if(StringUtils.isBlank(fragment.getName())){
+                    return "游戏名不能为空";
+                }
+                //交换的碎片
+                if(StringUtils.isBlank(fragment.getExchange())){
+                    return "你不告诉大佬你想要啥，怎么去交换啊？";
                 }
             }
-
+            fragmentService.insert(fragment);
+            return "success";
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return "模板内容有误，请重新填写";
+
     }
 
     @ApiOperation("下载模板")

@@ -1,5 +1,6 @@
 server:
   port: 8081
+  connection-timeout: 60000
 spring:
   mail:
     host: smtp.qq.com

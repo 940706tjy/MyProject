@@ -1,3 +1,4 @@
+
 package cn.bulaomeng.fragment.filter;
 
 
@@ -8,7 +9,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@WebFilter(filterName="xssFilter",urlPatterns="/*")
+//@WebFilter(filterName="xssFilter",urlPatterns="/*")
 public class XssFilter implements Filter {
     private FilterConfig filterConfig;
 
