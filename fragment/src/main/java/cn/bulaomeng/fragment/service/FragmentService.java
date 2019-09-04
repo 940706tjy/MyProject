@@ -35,7 +35,7 @@ public class FragmentService {
                 message.setFrom(from);
                 message.setTo(fragment.getEmail()); //自己给自己发送邮件
                 message.setSubject("主题:登记成功!");
-                message.setText("请登录: http://blm.free.idcfengye.com/index.html 查看记录 和大佬们一起换取想要的式神吧!");
+                message.setText("请登录: http://47.104.84.65/ 查看记录 和大佬们一起换取想要的式神吧!");
                 mailSender.send(message);
             }
         }
