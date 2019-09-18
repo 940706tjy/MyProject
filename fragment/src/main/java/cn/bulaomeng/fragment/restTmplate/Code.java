@@ -41,12 +41,19 @@ public class Code {
         map.put("nonceStr",uuid);
         map.put("appSign",mySign.get("sign"));
         System.out.println(mySign.get("sign"));
-        getCodeCofing(map);
+        //getCodeCofing(map);
     }
-
+    //获得二维码配置接口
     public  static  JSONObject getCodeCofing(Map<String,Object> map){
         RestTemplate restTemplate = new RestTemplate();
         String data=restTemplate.postForObject("http://demo.greatge.net:28981/code/getqrcodeconfig",map,String.class);
+        System.out.println(data);
+        return null;
+    }
+    //签到
+    public  static  JSONObject goSign (Map<String,Object> map){
+        RestTemplate restTemplate = new RestTemplate();
+        String data=restTemplate.postForObject("http://demo.greatge.net:28981/checkin",map,String.class);
         System.out.println(data);
         return null;
     }
