@@ -141,6 +141,12 @@ public class Code {
                 for (byte b : isoByteStr){
                     System.out.println(b);
                 }
+                System.out.println("============================================================分割线===========================================================");
+                //https://blog.csdn.net/u010277446/article/details/52459613
+                for (byte b : subBytes(isoByteStr,isoByteStr.length-7,2)){
+                    System.out.println(b);
+                }
+                System.out.println(bytes2Int(subBytes(isoByteStr,isoByteStr.length-7,2)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -155,8 +161,28 @@ public class Code {
     * @Author: tjy
     * @Date: 2019/9/19
     */
-   /* public static  Map<String,Object> splitDeGetData(byte[] data){
+    public static byte[] subBytes(byte[] src, int srcPos, int length) {
+        byte[] bs = new byte[length];
+        System.arraycopy(src, srcPos, bs, 0, length);
+        return bs;
+    }
+    public static int bytes2Int(byte[] bytes) {
+        int result = 0;
+        //将每个byte依次搬运到int相应的位置
+        result = bytes[0] & 0xff;
+        for (int i=1;i<bytes.length;i++){
+            result = result << 8 | bytes[i] & 0xff;
+        }
+        return result;
+    }
 
-    }*/
-
+    public static String conver2HexStr(byte [] b)
+    {
+        StringBuffer result = new StringBuffer();
+        for(int i = 0;i<b.length;i++)
+        {
+            result.append(Long.toString(b[i] & 0xff, 2)+",");
+        }
+        return result.toString().substring(0, result.length()-1);
+    }
 }
