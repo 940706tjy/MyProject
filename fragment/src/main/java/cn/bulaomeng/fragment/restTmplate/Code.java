@@ -1,5 +1,7 @@
 package cn.bulaomeng.fragment.restTmplate;
 
+import cn.bulaomeng.fragment.entity.User;
+import cn.bulaomeng.fragment.util.DeCodeUtil;
 import cn.bulaomeng.fragment.util.Md5;
 import cn.bulaomeng.fragment.util.RSAUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -32,7 +34,7 @@ public class Code {
         parameters.put("outTradeNo",outTradeNo);
         parameters.put("body",body);
         parameters.put("nonceStr",nonceStr);
-        Map<String,Object> mySign = createSign(parameters,key);
+        Map<String,Object> mySign = DeCodeUtil.createSign(parameters,key);
         System.out.println("我 的签名是："+mySign.get("addSign"));
         System.out.println("========================分隔线=============================");
         //2.生成随机数
@@ -67,32 +69,7 @@ public class Code {
         return null;
     }
 
-    public static Map<String,Object> createSign(SortedMap<Object,Object> parameters,String key){
-        StringBuffer sb = new StringBuffer();
-        StringBuffer sbkey = new StringBuffer();
-        Set es = parameters.entrySet();  //所有参与传参的参数按照accsii排序（升序）
-        Iterator it = es.iterator();
-        while(it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String k = (String)entry.getKey();
-            Object v = entry.getValue();
-            //空值不传递，不参与签名组串
-            if(null != v && !"".equals(v)) {
-                sb.append(k + "=" + v + "&");
-                sbkey.append(k + "=" + v + "&");
-            }
-        }
-        //System.out.println("字符串:"+sb.toString());
-        sbkey=sbkey.append("key="+key);
-        System.out.println("字符串:"+sbkey.toString());
-        //MD5加密,结果转换为大写字符
-        String sign = Md5.getMD5(sbkey.toString()).toUpperCase();
-        System.out.println("MD5加密值:"+sign);
-        Map<String,Object> map = new HashMap<>();
-        map.put("sign",sign);
-        map.put("addSign",sb.toString()+"sign="+sign);
-        return map;
-    }
+
 
     public static void decode(){
         //公钥
@@ -141,12 +118,53 @@ public class Code {
                 for (byte b : isoByteStr){
                     System.out.println(b);
                 }
+                System.out.println("===========================================================将数据存入对象======================================================================");
+                User user =new User();
+                //System.out.println("-----------------"+bytesChar(subBytes(isoByteStr,isoByteStr.length-5,5)));
+                user.setCheckCode(bytesChar(subBytes(isoByteStr,isoByteStr.length-5,5))); //存储解密后的校验码
+                user.setUserName(deSplitStr[1]);//存储用户名称
+                user.setUserNo(deSplitStr[0]);//存储学工号
                 System.out.println("============================================================分割线===========================================================");
                 //https://blog.csdn.net/u010277446/article/details/52459613
                 for (byte b : subBytes(isoByteStr,isoByteStr.length-7,2)){
                     System.out.println(b);
                 }
-                System.out.println(bytes2Int(subBytes(isoByteStr,isoByteStr.length-7,2)));
+                System.out.println(bytes2Int(subBytes(isoByteStr,2,1)));
+                System.out.println("========================================分割线=====================================");
+                //把学工号使用UTF_8编码转换为byte数组。
+                byte userNo[] = deSplitStr[0].getBytes("UTF-8");
+                //把姓名使用UTF_8编码转换为byte数组。
+                byte name[] = deSplitStr[1].getBytes("UTF-8");
+                //把性别使用UTF_8编码转换为byte数组。
+                byte sex[] = deSplitStr[2].getBytes("UTF-8");
+                //除校验码的二进制内容
+                byte all[] = subBytes(isoByteStr,0,isoByteStr.length-5);
+                //把byte数据按照学工号、姓名、性别和第9步的列表中除去校验码外的数据按照顺序拼接为一个byte数组。使用md5算法得到十六进编码的字符串，取最后5个字符，再使用UTF_8编码转换为5个字节的byte数组。
+                byte[] byteResult = new byte[userNo.length+name.length+sex.length+all.length];
+                System.arraycopy(userNo,0,byteResult,0,userNo.length);
+                System.arraycopy(name,0,byteResult,userNo.length,name.length);
+                System.arraycopy(sex,0,byteResult,userNo.length+name.length,sex.length);
+                System.arraycopy(all,0,byteResult,userNo.length+name.length+sex.length,all.length);
+                System.out.println("no:====================================="+userNo.length);
+                System.out.println("name:==================================="+name.length);
+                System.out.println("sex:===================================="+sex.length);
+                System.out.println("all:===================================="+all.length);
+                System.out.println("byteResult:============================="+byteResult.length);
+                for (byte b:byteResult){
+                    System.out.println(b);
+                }
+                //比较解码得到的校验码和计算得到的校验码是否相同，确定解码的内容是否有效。
+                System.out.println("=====================分割线=====================");
+                String md5Str1 = DeCodeUtil.md5Encrypt3(new String(byteResult,"UTF-8"));
+                byte md5StrSp[] = md5Str1.substring(md5Str1.length()-5).getBytes("UTF-8");
+                for (byte b: md5StrSp){
+                    System.out.println((char)b);
+                }
+                user.setLinkCheckCode(bytesChar(md5StrSp)); //截取后的校验码
+                if(user.getCheckCode().equals(user.getLinkCheckCode())){
+                    System.out.println("匹配");
+                }
+                System.out.println(user.toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -175,14 +193,19 @@ public class Code {
         }
         return result;
     }
-
-    public static String conver2HexStr(byte [] b)
-    {
-        StringBuffer result = new StringBuffer();
-        for(int i = 0;i<b.length;i++)
-        {
-            result.append(Long.toString(b[i] & 0xff, 2)+",");
+    /** 
+    * @Description: 将byte数组转为对应二进制并拼接
+    * @Param: [bytes] 
+    * @return: java.lang.String 
+    * @Author: tjy
+    * @Date: 2019/9/20 
+    */ 
+    public static String bytesChar(byte[] bytes){
+        StringBuffer sb = new StringBuffer();
+        for(byte b:bytes){
+            sb.append((char)b);
         }
-        return result.toString().substring(0, result.length()-1);
+        return sb.toString();
     }
+
 }
