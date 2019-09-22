@@ -1,13 +1,15 @@
 package cn.bulaomeng.fragment.restTmplate;
 
 import cn.bulaomeng.fragment.entity.User;
+import cn.bulaomeng.fragment.util.AESPKCS7Util;
 import cn.bulaomeng.fragment.util.DeCodeUtil;
-import cn.bulaomeng.fragment.util.Md5;
 import cn.bulaomeng.fragment.util.RSAUtil;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.Security;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Code {
@@ -89,10 +91,42 @@ public class Code {
             //3.使用竖线“|”分割字符串，得到第一部分字符串为二维码编码字符串。
             String splitCode[] = code.split("\\|");
             System.out.println(splitCode[0]);
+            System.out.println(splitCode[1]);
+
             /*
             4.使用AES算法解密“时间字符串”，密钥固定为“GreatgeRonfton81”算法使用“AES/CBC/PKCS7Padding”，向量为密钥的前16byte。解密后得到一个逗号分割的字符串，如：9,100000,7000,0,103717。最后一部分“103717”
             为二维码在小程序上展示的时间，通过与当前的时间进行比对，如果两者相差超过二维码配置接口返回的“displayLimitTime”的秒数，则认为二维码已经失效，程序应该提示用户二维码已经失效
              */
+            String deCodeDate;
+            try {
+                //密钥
+                String sessionKey = "GreatgeRonfton81";
+                //向量
+                String iv = "GreatgeRonfton81";
+                Base64.Encoder encoder = Base64.getEncoder();
+                String baseSessionKey = encoder.encodeToString(sessionKey.getBytes());
+                String baseIv = encoder.encodeToString(iv.getBytes());
+                Security.addProvider(new BouncyCastleProvider());
+                //通过 AESPKCS7 解密字符串
+                deCodeDate = AESPKCS7Util.decrypt(splitCode[1],baseSessionKey,baseIv);
+                System.out.println("4.AES解密后的字段============================"+deCodeDate);
+                //根据逗号分隔时间字符串
+                String getSpStr[] = deCodeDate.split(",");
+                //获得截取时间字符串中最后的时间字段
+                String codeDate = getSpStr[getSpStr.length-1];
+                //获取当前时间时分秒，与截取的时间做差比较如果大于所规定时间为二维码超时
+                SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
+                String currentDate = sdf.format(new Date());
+                //当前时间 - 二维码生成时间
+                Integer endDate = Integer.parseInt(currentDate) - Integer.parseInt(codeDate);
+                System.out.println(currentDate);
+                //按照配置接口返回的参数 规定大于65s为超时需要给出提示过期
+                if(endDate>=65){
+                    System.out.println("二维码已过期！");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             //5.根据当前时间获取当前周期，进而获取当前周期的公钥
 
@@ -100,9 +134,9 @@ public class Code {
 
             //7.对二维码字符串进行base64解码，得到byte数组。
             String byteStr = splitCode[0];
-            //解码
-            byte decode[] = Base64.decodeBase64(byteStr.getBytes());
-            System.out.println(byteStr + "\t字符串解码后为：" + decode);
+            //解码这步在第8部 RSAUtil.publicDecrypt 工具类中实现
+            /*byte decode[] = Base64.decodeBase64(byteStr.getBytes());
+            System.out.println(byteStr + "\t字符串解码后为：" + decode);*/
             /*
             8.使用公钥对byte数组解密，得到解密后的byte数组。如果解密失败，则根据风控允许的误差时间（参考配置接口获取）
             加载前一周期或者下一周期的公钥再尝试解密。注意，如果base64解码后得到的byte数组的比特长度超过密钥的长度时，需要分片进行解密，然后再顺序拼接成一个byte数组

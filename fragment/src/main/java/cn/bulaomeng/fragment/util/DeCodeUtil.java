@@ -82,8 +82,12 @@ public class DeCodeUtil {
     }
 
     /*
-      MD5工具模块
-     */
+    * @Description: MD5解密工具
+    * @Param:  
+    * @return:  
+    * @Author: tjy
+    * @Date: 2019/9/22 
+    */ 
     
     //16进制数字数组
     private final static String[] hexDigits = {"0", "1", "2", "3", "4", "5", "6", "7",
@@ -139,4 +143,7 @@ public class DeCodeUtil {
         }
         return resultString;
     }
+
+
+
 }
