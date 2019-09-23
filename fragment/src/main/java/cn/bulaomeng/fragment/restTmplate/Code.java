@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.SecureRandom;
 import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -40,7 +41,7 @@ public class Code {
         System.out.println("我 的签名是："+mySign.get("addSign"));
         System.out.println("========================分隔线=============================");
         //2.生成随机数
-        String uuid = UUID.randomUUID().toString().toUpperCase().replaceAll("-", "");
+        String uuid = DeCodeUtil.getGUID();
         System.out.println(uuid);
         //调用配置接口
         Map<String,Object> map = new HashMap<>();
