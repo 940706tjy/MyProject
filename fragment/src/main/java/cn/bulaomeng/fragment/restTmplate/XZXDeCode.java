@@ -21,7 +21,13 @@ import java.util.*;
 */ 
 public class XZXDeCode {
     public static void main(String[] args) {
-        System.out.println(deCode());
+        //公钥
+       String publicKey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAObmFl6JiP3ea9SUJtROpPvdmKjJGG0l2YgLZN3HO0pa3g4kqBYs6IAN9Zjil6K92D3Siq55ujkqESjE31+fNUMCAwEAAQ==";
+        //二维码
+        String code = "RFT://k2n/+6HCVbDCpgEsA+oqCbpqYikBZ39qnq1AG0m9zfhVHK7itN+1h6rlJzb1Zyf067lfnVohYRKkVnVasUzm/A==|ionGGcU+zaOgkeP8mqlGrVXUtydb35qLh08+mTI/zZM=";
+        //配置接口协议头
+        String protocolHeader = "RFT://";
+        System.out.println(deCode(publicKey,code,protocolHeader));
         System.out.println("===========================签名============================");
         sign();
     }
@@ -63,11 +69,11 @@ public class XZXDeCode {
         String uuid = UUID.randomUUID().toString().toUpperCase().replaceAll("-", "");
         System.out.println(uuid);
         //签名
-        Map<String,Object> map = new HashMap<>();
+      /*  Map<String,Object> map = new HashMap<>();
         map.put("data",appId);
         map.put("nonceStr",uuid);
-        map.put("localAuthSign",mySign.get("sign"));
-        goSign(map);
+        map.put("localAuthSign",mySign.get("sign"));*/
+        //goSign(map);
        /* Map<String,Object> signMap = new HashMap<>();
         signMap.put("appId",appId);
         signMap.put("nonceStr","5K8264ILTKCH16CQ2502SI8ZNMTM67VS");
@@ -95,13 +101,7 @@ public class XZXDeCode {
     * @Author: tjy
     * @Date: 2019/9/20 
     */ 
-    public static User deCode(){
-        //公钥
-        String publicKey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAObmFl6JiP3ea9SUJtROpPvdmKjJGG0l2YgLZN3HO0pa3g4kqBYs6IAN9Zjil6K92D3Siq55ujkqESjE31+fNUMCAwEAAQ==";
-        //二维码
-        String code = "RFT://k2n/+6HCVbDCpgEsA+oqCbpqYikBZ39qnq1AG0m9zfhVHK7itN+1h6rlJzb1Zyf067lfnVohYRKkVnVasUzm/A==|ionGGcU+zaOgkeP8mqlGrVXUtydb35qLh08+mTI/zZM=";
-        //配置接口协议头
-        String protocolHeader = "RFT://";
+    public static User deCode(String publicKey,String code,String protocolHeader){
 
         //1.根据配置接口获取的协议头判断是否系统发放的码。
         String isHeader = code.substring(0,protocolHeader.length());
