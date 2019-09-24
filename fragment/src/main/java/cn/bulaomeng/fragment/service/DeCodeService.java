@@ -100,7 +100,6 @@ public class DeCodeService {
     * @Date: 2019/9/23 
     */ 
     public CreateAppSing checkSign(CreateAppSing singData){
-        System.out.println(singData);
         //判断签到成功后返回的数据是否存在
         if(StringUtils.isBlank(singData.getNonceStr()) || StringUtils.isBlank(singData.getAppSign()) || StringUtils.isBlank(singData.getLocalAuthSign()) ){
             return null;
@@ -112,6 +111,12 @@ public class DeCodeService {
         inputParam.setAppid(appId);
         inputParam.setNonceStr(singData.getNonceStr());
         inputParam.setAppSign(singData.getAppSign());
+        //将参数存入map，调用签名算法
+        SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
+        parameters.put("data",JSON.toJSONString(inputParam)); //这里需要将对象转成json字符串，使用fastjson工具
+        parameters.put("nonceStr",singData.getNonceStr());
+        //调用签名算法，得到签名字符串
+        String mySign = DeCodeUtil.createSign(parameters,key);
 
         //通过RestTemplate请求对应接口
         ParamRestTemplate par = new ParamRestTemplate();
@@ -127,13 +132,12 @@ public class DeCodeService {
 
         map.put("data",JSON.toJSONString(inputParam));
         map.put("nonceStr",singData.getNonceStr());
-        map.put("localAuthSign",singData.getLocalAuthSign());
+        map.put("localAuthSign",mySign);
         par.setParam(map);
         par.setUrl(VERIFY_APP_SIGN);
         JSONObject js = reqeusRestTemplate(par);
         if(js == null){
             return null;
-
         }
         //将结果存入对象
         createAppSing.setReturnCode(js.getString("returnCode"));
@@ -143,13 +147,12 @@ public class DeCodeService {
             //签名结果 1：通过；0：不通过  不通过如何处理？
             //这里如果在这递归处理，如果一直请求不成功就会进入无限循环
             if("0".equals(js.getString("state"))){
-                //TODO
+                return null;
             }
             createAppSing.setState(js.getString("state"));
             createAppSing.setLocalAuthSign(js.getString("localAuthSign"));
             createAppSing.setNonceStr(js.getString("nonceStr"));
         }
-
         return createAppSing;
     }
     
@@ -163,34 +166,40 @@ public class DeCodeService {
     public QrcodeConfig getCodeConfData(CreateAppSing singData){
         //判断签到成功后返回的数据是否存在
         if(StringUtils.isBlank(singData.getAppSign()) || StringUtils.isBlank(singData.getLocalAuthSign())){
-            //TODO
+            return null;
         }
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+
         //通过RestTemplate请求对应接口
         ParamRestTemplate par = new ParamRestTemplate();
         //返回对象
         QrcodeConfig qrcodeConfig = new QrcodeConfig();
         //RestTemplate中所需的Map参数
         Map<String,Object> map = new HashMap<>();
+        SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
+        parameters.put("appId",appId);
+        parameters.put("nonceStr",singData.getNonceStr());
+        //调用签名算法，得到签名字符串
+        String mySign = DeCodeUtil.createSign(parameters,key);
         /*
             开放平台应用ID	appId		String	    rft123456	                        开放平台应用ID
             随机字符串	    nonceStr	String	    5K8264ILTKCH16CQ2502SI8ZNMTM67VS	用于签名
             应用认证签名	    appSign		String	    D363A06B5C35CF99C85CA477FCE8B36B	按照签名算法，使用应用动态秘钥对上述所有数据进行签名
          */
-        map.put("nonceStr","5K8264ILTKCH16CQ2502SI8ZNMTM67VS");
-        map.put("appSign","D363A06B5C35CF99C85CA477FCE8B36B");
         //将签名成功后的信息作为参数
-        //map.put("nonceStr",singData.getNonceStr());
-        //map.put("appSign",singData.getAppSign());
-        map.put("appId","rft123456");
+        map.put("nonceStr",singData.getNonceStr());
+        map.put("appSign",mySign);
+        map.put("appId",appId);
         par.setParam(map);
         par.setUrl(GET_CODE_CONFIG);
         JSONObject js = reqeusRestTemplate(par);
         if(js == null){
-            //TODO
+            return null;
         }
         //将结果存入对象
         qrcodeConfig.setReturnCode(js.getString("returnCode"));
         qrcodeConfig.setReturnMsg(js.getString("returnMsg"));
+
         //当returnCode为SUCCESS的时候，还会包括以下字段：
         /*
             开放平台应用ID	    appId		    String	    rft123456
@@ -200,7 +209,7 @@ public class DeCodeService {
             错误代码描述	        errCodeDes	    String	    系统错误 (必填：否)
             签名	                appSign		    String	    C380BEC2BFD727A4B6845133519F3AD6
          */
-        if ("SUCCESS".equals(qrcodeConfig.getReturnCode()) && "OK".equals(qrcodeConfig.getReturnMsg())){
+        if ("SUCCESS".equals(qrcodeConfig.getReturnCode())){
             qrcodeConfig.setAppId(js.getString("appId"));
             qrcodeConfig.setNonceStr(js.getString("nonceStr"));
             qrcodeConfig.setResultCode(js.getString("resultCode"));
@@ -239,33 +248,35 @@ public class DeCodeService {
     public PublicKeys getPublicKey(CreateAppSing singData){
         //判断签到成功后返回的数据是否存在
         if(StringUtils.isBlank(singData.getAppSign()) || StringUtils.isBlank(singData.getLocalAuthSign())){
-            //TODO
+            return null;
         }
         //通过RestTemplate请求对应接口
         ParamRestTemplate par = new ParamRestTemplate();
+        SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
+        parameters.put("appId",appId);
+        parameters.put("nonceStr",singData.getNonceStr());
+        //调用签名算法，得到签名字符串
+        String mySign = DeCodeUtil.createSign(parameters,key);
         //返回对象
         PublicKeys pk = new PublicKeys();
         //RestTemplate中所需的Map参数
         Map<String,Object> map = new HashMap<>();
-        //返回对象中的公钥数组
-        List<PublicKeysList> list = new ArrayList<>();
         /*
             开放平台应用ID	appId		String	    rft123456	                        开放平台应用ID
             随机字符串	    nonceStr	String	    5K8264ILTKCH16CQ2502SI8ZNMTM67VS	用于签名
             应用认证签名	    appSign		String	    D363A06B5C35CF99C85CA477FCE8B36B	按照签名算法，使用应用动态秘钥对上述所有数据进行签名
         */
-        map.put("nonceStr","5K8264ILTKCH16CQ2502SI8ZNMTM67VS");
-        map.put("appSign","D363A06B5C35CF99C85CA477FCE8B36B");
-        map.put("appId","rft123456");
         //将签名成功后的信息作为参数
-        //map.put("nonceStr",singData.getNonceStr());
-        //map.put("appSign",singData.getAppSign());
+        map.put("nonceStr",singData.getNonceStr());
+        map.put("appSign",mySign);
+        map.put("appId",appId);
         par.setParam(map);
         par.setUrl(GET_PUBLIC_KEYS);
         JSONObject js = reqeusRestTemplate(par);
         if(js == null){
             //TODO
         }
+        System.out.println(js);
         //将结果存入对象
         pk.setReturnCode(js.getString("returnCode"));
         pk.setReturnMsg(js.getString("returnMsg"));
@@ -278,7 +289,7 @@ public class DeCodeService {
             错误代码描述	        errCodeDes	    String	    系统错误 (必填：否)
             签名	                appSign		    String	    C380BEC2BFD727A4B6845133519F3AD6
          */
-        if ("SUCCESS".equals(pk.getReturnCode()) && "OK".equals(pk.getReturnMsg())){
+        if ("SUCCESS".equals(pk.getReturnCode())){
             pk.setAppId(js.getString("appId"));
             pk.setNonceStr(js.getString("nonceStr"));
             pk.setResultCode(js.getString("resultCode"));

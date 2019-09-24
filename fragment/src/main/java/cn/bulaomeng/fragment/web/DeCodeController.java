@@ -2,6 +2,8 @@ package cn.bulaomeng.fragment.web;
 
 import cn.bulaomeng.fragment.service.CreateAppSing;
 import cn.bulaomeng.fragment.service.DeCodeService;
+import cn.bulaomeng.fragment.service.PublicKeys;
+import cn.bulaomeng.fragment.service.QrcodeConfig;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +39,18 @@ public class DeCodeController {
         System.out.println("用户信息为："+user);*/
 
 
-        //获取签名信息
+        //1.获取签名信息
         CreateAppSing createAppSing = deCodeService.getCreateAppSign();
-        System.out.println(createAppSing);
-        //签名校验(将签名成功后的信息传入)
+        System.out.println("签名返回信息：================================================"+createAppSing);
+        //2.签名校验(将签名成功后的信息传入)
         CreateAppSing checkSing = deCodeService.checkSign(createAppSing);
+        System.out.println("验签返回信息：================================================"+checkSing);
+        //3.如果验签正确，使用签名的信息获取二维码配置信息
+        //QrcodeConfig qc = deCodeService.getCodeConfData(createAppSing);
+        //4.获取公钥
+        PublicKeys publicKeys = deCodeService.getPublicKey(createAppSing);
         //在线获取信息
-        return checkSing;
+        return publicKeys;
 
     }
 
