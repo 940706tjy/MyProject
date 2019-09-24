@@ -62,8 +62,8 @@ public class XZXDeCode {
         parameters.put("outTradeNo",outTradeNo);
         parameters.put("body",body);
         parameters.put("nonceStr",nonceStr);
-        Map<String,Object> mySign = DeCodeUtil.createSign(parameters,key);
-        System.out.println("我的签名是："+mySign.get("addSign"));
+        String mySign = DeCodeUtil.createSign(parameters,key);
+        System.out.println("我 的签名是："+mySign);
         System.out.println("========================分隔线=============================");
         //2.生成随机数
         String uuid = UUID.randomUUID().toString().toUpperCase().replaceAll("-", "");

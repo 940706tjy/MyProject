@@ -13,7 +13,7 @@ public class DeCodeUtil {
     * @Author: tjy
     * @Date: 2019/9/20 
     */ 
-    public static Map<String,Object> createSign(SortedMap<Object,Object> parameters, String key){
+    public static String createSign(SortedMap<Object,Object> parameters, String key){
         StringBuffer sb = new StringBuffer();
         StringBuffer sbkey = new StringBuffer();
         Set es = parameters.entrySet();  //所有参与传参的参数按照accsii排序（升序）
@@ -34,10 +34,7 @@ public class DeCodeUtil {
         //MD5加密,结果转换为大写字符
         String sign = Md5.getMD5(sbkey.toString()).toUpperCase();
         System.out.println("MD5加密值:"+sign);
-        Map<String,Object> map = new HashMap<>();
-        map.put("sign",sign);
-        map.put("addSign",sb.toString()+"sign="+sign);
-        return map;
+        return sign;
     }
     /**
      * @Description: 将解密后的字节数组按要求截取

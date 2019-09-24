@@ -10,6 +10,18 @@ public class CreateAppSing {
     private String localAuthSign; //签名
     private String state; //签名结果（用于验证签名接口）
 
+    @Override
+    public String toString() {
+        return "CreateAppSing{" +
+                "returnCode='" + returnCode + '\'' +
+                ", returnMsg='" + returnMsg + '\'' +
+                ", appSign='" + appSign + '\'' +
+                ", nonceStr='" + nonceStr + '\'' +
+                ", localAuthSign='" + localAuthSign + '\'' +
+                ", state='" + state + '\'' +
+                '}';
+    }
+
     public String getState() {
         return state;
     }

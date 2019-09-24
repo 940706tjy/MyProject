@@ -8,7 +8,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.web.client.RestTemplate;
 
-import java.security.SecureRandom;
 import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,8 +36,8 @@ public class Code {
         parameters.put("outTradeNo",outTradeNo);
         parameters.put("body",body);
         parameters.put("nonceStr",nonceStr);
-        Map<String,Object> mySign = DeCodeUtil.createSign(parameters,key);
-        System.out.println("我 的签名是："+mySign.get("addSign"));
+        String mySign = DeCodeUtil.createSign(parameters,key);
+        System.out.println("我 的签名是："+mySign);
         System.out.println("========================分隔线=============================");
         //2.生成随机数
         String uuid = DeCodeUtil.getGUID();
@@ -47,7 +46,7 @@ public class Code {
         Map<String,Object> map = new HashMap<>();
         map.put("appId","rft123456");
         map.put("nonceStr",uuid);
-        map.put("appSign",mySign.get("sign"));
+        map.put("appSign",mySign);
         //System.out.println(mySign.get("sign"));
         //getCodeCofing(map);
         Map<String,Object> signMap = new HashMap<>();

@@ -1,5 +1,6 @@
 package cn.bulaomeng.fragment.web;
 
+import cn.bulaomeng.fragment.service.CreateAppSing;
 import cn.bulaomeng.fragment.service.DeCodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,9 +36,14 @@ public class DeCodeController {
         User user = XZXDeCode.deCode(publicKey,code,protocolHeader);
         System.out.println("用户信息为："+user);*/
 
-        //在线获取信息
 
-        return deCodeService.onlineDeCode("120061098828009406","POS000001");
+        //获取签名信息
+        CreateAppSing createAppSing = deCodeService.getCreateAppSign();
+        System.out.println(createAppSing);
+        //签名校验(将签名成功后的信息传入)
+        CreateAppSing checkSing = deCodeService.checkSign(createAppSing);
+        //在线获取信息
+        return checkSing;
 
     }
 
