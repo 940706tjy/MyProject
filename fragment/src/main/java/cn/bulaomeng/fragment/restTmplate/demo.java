@@ -39,7 +39,9 @@ public class demo {
     }
 
     public static void main(String[] args) throws IOException, ParseException {
+        String timestamp = String.valueOf(System.currentTimeMillis()) ; //当前时间戳
 
+        System.out.println(timestamp);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         Date date =new Date();
         String currentDate = sdf.format(date);
