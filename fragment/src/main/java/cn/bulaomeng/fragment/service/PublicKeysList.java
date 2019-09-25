@@ -29,4 +29,13 @@ public class PublicKeysList {
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
+
+    @Override
+    public String toString() {
+        return "PublicKeysList{" +
+                "startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", publicKey='" + publicKey + '\'' +
+                '}';
+    }
 }

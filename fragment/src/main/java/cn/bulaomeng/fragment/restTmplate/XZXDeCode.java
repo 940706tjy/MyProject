@@ -27,9 +27,8 @@ public class XZXDeCode {
         String code = "RFT://k2n/+6HCVbDCpgEsA+oqCbpqYikBZ39qnq1AG0m9zfhVHK7itN+1h6rlJzb1Zyf067lfnVohYRKkVnVasUzm/A==|ionGGcU+zaOgkeP8mqlGrVXUtydb35qLh08+mTI/zZM=";
         //配置接口协议头
         String protocolHeader = "RFT://";
-        System.out.println(deCode(publicKey,code,protocolHeader));
         System.out.println("===========================签名============================");
-        sign();
+        System.out.println(deCode(publicKey,code,protocolHeader));
     }
 
     /** 
@@ -114,10 +113,12 @@ public class XZXDeCode {
             //3.使用竖线“|”分割字符串，得到第一部分字符串为二维码编码字符串。得到第二部分为展示时间和其它数据的字符串（以下简称时间字符串）。二维码字符串使用RSA算法解密，时间字符串使用AES算法解密。
             String splitCode[] = code.split("\\|");
 
-            /*
+/*
+
             4.使用AES算法解密“时间字符串”，密钥固定为“GreatgeRonfton81”算法使用“AES/CBC/PKCS7Padding”，向量为密钥的前16byte。解密后得到一个逗号分割的字符串，如：9,100000,7000,0,103717。最后一部分“103717”
             为二维码在小程序上展示的时间，通过与当前的时间进行比对，如果两者相差超过二维码配置接口返回的“displayLimitTime”的秒数，则认为二维码已经失效，程序应该提示用户二维码已经失效
-             */
+*/
+
             String deCodeDate;
             try {
                 //密钥
@@ -154,15 +155,15 @@ public class XZXDeCode {
             //7.对二维码字符串进行base64解码，得到byte数组。
             String byteStr = splitCode[0];
             //解码这步在第8 RSAUtil.publicDecrypt 工具类中实现
-            /*
-            byte decode[] = Base64.decodeBase64(byteStr.getBytes());
-            System.out.println(byteStr + "\t字符串解码后为：" + decode);
-            */
 
-            /*
+          /*  byte decode[] = Base64.decodeBase64(byteStr.getBytes());
+            System.out.println(byteStr + "\t字符串解码后为：" + decode);*/
+
+
+          /*
             8.使用公钥对byte数组解密，得到解密后的byte数组。如果解密失败，则根据风控允许的误差时间（参考配置接口获取）
-            加载前一周期或者下一周期的公钥再尝试解密。注意，如果base64解码后得到的byte数组的比特长度超过密钥的长度时，需要分片进行解密，然后再顺序拼接成一个byte数组
-             */
+            加载前一周期或者下一周期的公钥再尝试解密。注意，如果base64解码后得到的byte数组的比特长度超过密钥的长度时，需要分片进行解密，然后再顺序拼接成一个byte数组*/
+
             try {
                 byte[] deByteArr = RSAUtil.publicDecrypt(byteStr,publicKey);
                 String deStr = new String(deByteArr,"UTF-8");

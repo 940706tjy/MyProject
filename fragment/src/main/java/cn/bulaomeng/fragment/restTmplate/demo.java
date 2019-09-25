@@ -3,6 +3,7 @@ package cn.bulaomeng.fragment.restTmplate;
 
 import cn.bulaomeng.fragment.entity.Fragment;
 import cn.bulaomeng.fragment.service.CreateAppSing;
+import cn.bulaomeng.fragment.util.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.zxing.BarcodeFormat;
@@ -16,6 +17,9 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,18 +38,27 @@ public class demo {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        CreateAppSing createAppSing = new CreateAppSing();
+    public static void main(String[] args) throws IOException, ParseException {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date date =new Date();
+        String currentDate = sdf.format(date);
+        //记录当前时间
+        Long currentFlag = Long.parseLong(currentDate);
+        System.out.println(currentFlag);
+
+
+      /*  CreateAppSing createAppSing = new CreateAppSing();
         createAppSing.setAppSign(" 1");
 
         Map<String,Object> map = new HashMap<>();
-      /*  map.put("appId","rft123456");
+      *//*  map.put("appId","rft123456");
         map.put("nonceStr","5K8264ILTKCH16CQ2502SI8ZNMTM67VS");
-        map.put("appSign","D363A06B5C35CF99C85CA477FCE8B36B");*/
+        map.put("appSign","D363A06B5C35CF99C85CA477FCE8B36B");*//*
         map.put("name","清");
         RestTemplate restTemplate = new RestTemplate();
         JSONObject js=restTemplate.postForObject("http://47.104.84.65/fragment/selectByPrimaryKey",map, JSONObject.class);
-        System.out.println("签名:---"+js);
+        System.out.println("签名:---"+js);*/
        /* RestTemplate restTemplate = new RestTemplate();
         Map<String,Object> map = new HashMap<>();
         map.put("exchange","");

@@ -2,7 +2,7 @@ package cn.bulaomeng.fragment.service;
 
 //请求接口参数
 public class InputParam {
-    private String appid;
+    private String appId;
     private String name;
     private String nonceStr;
     private String appSign;
@@ -23,12 +23,12 @@ public class InputParam {
         this.appSign = appSign;
     }
 
-    public String getAppid() {
-        return appid;
+    public String getAppId() {
+        return appId;
     }
 
-    public void setAppid(String appid) {
-        this.appid = appid;
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
     public String getName() {

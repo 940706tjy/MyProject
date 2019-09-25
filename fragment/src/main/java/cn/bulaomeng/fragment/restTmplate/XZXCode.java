@@ -27,7 +27,7 @@ public class XZXCode {
         String key="ryAJCLlelunLLb02rt4V7xUaH6ScZn1l";
         InputParam inputParam = new InputParam();
         inputParam.setName(name);
-        inputParam.setAppid(appId);
+        inputParam.setAppId(appId);
         parameters.put("data",JSON.toJSONString(inputParam));
         parameters.put("nonceStr",uuid);
 
