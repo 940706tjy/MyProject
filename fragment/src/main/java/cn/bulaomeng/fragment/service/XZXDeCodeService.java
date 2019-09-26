@@ -13,7 +13,7 @@ import java.util.*;
     离线解码获取用户信息
  */
 @Service
-public class DeCodeService {
+public class XZXDeCodeService {
 
     //签名接口地址
     private final String CREATE_APP_SIGN = "http://60.205.182.0:9000/sign/createappsign";
@@ -322,7 +322,7 @@ public class DeCodeService {
         par.setUrl(GET_IDENTY_BY_QRCODE);
         JSONObject js = reqeusRestTemplate(par);
         if(js==null){
-            //TODO
+            return null;
         }
         //将结果存入对象
         user.setReturnCode(js.getString("returnCode"));
@@ -362,7 +362,7 @@ public class DeCodeService {
                 user.setName(js.getString("name"));
             }
         }else {
-            //TODO
+            return null;
         }
             return user;
     }

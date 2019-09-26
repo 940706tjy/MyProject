@@ -41,7 +41,6 @@ public class demo {
     public static void main(String[] args) throws IOException, ParseException {
         String timestamp = String.valueOf(System.currentTimeMillis()) ; //当前时间戳
 
-        System.out.println(timestamp);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         Date date =new Date();
         String currentDate = sdf.format(date);
@@ -49,7 +48,10 @@ public class demo {
         Long currentFlag = Long.parseLong(currentDate);
         System.out.println(currentFlag);
 
-
+        long timeStamp = 1568908801*1000;  //获取当前时间戳,也可以是你自已给的一个随机的或是别人给你的时间戳(一定是long型的数据)
+        SimpleDateFormat sdf1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
+        String sd = sdf1.format(new Date(timeStamp));   // 时间戳转换成时间
+        System.out.println(sd);//打印出你要的时间
       /*  CreateAppSing createAppSing = new CreateAppSing();
         createAppSing.setAppSign(" 1");
 

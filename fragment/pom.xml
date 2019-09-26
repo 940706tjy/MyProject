@@ -136,8 +136,8 @@
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.60</version>
         </dependency>-->
-    </dependencies>
 
+    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -150,6 +150,19 @@
                 <version>1.3.6</version>
             </plugin>
         </plugins>
+     <!--   <resources>
+            <resource>
+                <directory>lib</directory>
+                <targetPath>BOOT-INF/lib/</targetPath>
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>BOOT-INF/classes/</targetPath>
+            </resource>
+        </resources>-->
     </build>
 
 </project>

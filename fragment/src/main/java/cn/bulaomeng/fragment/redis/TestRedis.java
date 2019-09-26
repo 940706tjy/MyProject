@@ -6,11 +6,13 @@ public class TestRedis {
     @Autowired
     static RedisTemplate<String,Object> redisTemplate;
     public static void main(String[] args) {
-        //将
+        //
         System.out.println("OPT02BM0011".substring(3));
         Integer num =  "BM0011".length();
 
         show("tutorial-name");
+
+
     }
     public static String show(String data){
        return redisTemplate.opsForValue().get(data).toString();
