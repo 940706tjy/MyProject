@@ -3,9 +3,14 @@ package cn.bulaomeng.fragment.service;
 import cn.bulaomeng.fragment.entity.TxwxKeySecret;
 import cn.bulaomeng.fragment.entity.User;
 import cn.bulaomeng.fragment.mapper.TxwxKeySecretMapper;
+import cn.bulaomeng.fragment.util.DeCodeUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.qq.weixiao.wxcode.CampusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.*;
 
 
 @Service
@@ -43,4 +48,45 @@ public class TXWXDeCodeService {
         }
         return tx;
     }
+
+
+    //在线解码
+    public TxwxKeySecret onlineDeCodeGetData(){
+        String onlineUrl = "https://weixiao.qq.com/apps/school-api/campus-code";
+        String uuid = UUID.randomUUID().toString().toUpperCase().replaceAll("-", "");
+        String appKey = "0FE8C24D97E240CD"; //服务商id
+        String timestamp = String.valueOf(System.currentTimeMillis()/1000) ; //当前时间戳
+        String nonce = uuid;   //随机字符串
+        int scene = 1;
+        String location	 = "三食堂";
+        String authCode = "http://wx.url.cn/v002.wxcampus.v4bBue.S7843m3t4ntdeXpoPKXybfdkOwibYNza72js4DcZwrpvafbgxra1j6f7sZviAyO7iO86NQpCYJTF-g_7_uSL6g";
+        String deviceNo = "device-1213";
+        String schoolCode = "wxcampus";
+        SortedMap<Object,Object> parameters = new TreeMap<>();
+        parameters.put("app_key", appKey);
+        parameters.put("timestamp",timestamp);
+        parameters.put("nonce",nonce);
+        parameters.put("scene",scene);
+        parameters.put("device_no",deviceNo);
+        parameters.put("location",location);
+        parameters.put("auth_code",authCode);
+        parameters.put("school_code",schoolCode);
+        String key="59C563A47F92D78076B71FE29F1BA209";
+        String  signature = DeCodeUtil.createSign(parameters,key); //签名
+        Map<String,Object> map = new HashMap<>();
+        map.put("app_key", appKey);
+        map.put("timestamp",timestamp);
+        map.put("nonce",nonce);
+        map.put("scene",scene);
+        map.put("device_no",deviceNo);
+        map.put("location",location);
+        map.put("auth_code",authCode);
+        map.put("school_code",schoolCode);
+        map.put("signature",signature);
+        RestTemplate restTemplate = new RestTemplate();
+        JSONObject js = restTemplate.postForObject(onlineUrl,map, JSONObject.class);
+
+        return null;
+    }
+
 }

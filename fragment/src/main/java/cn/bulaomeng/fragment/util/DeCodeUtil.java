@@ -224,14 +224,14 @@ public class DeCodeUtil {
         getKey.setPublicKey(list1.get(listIndex).getPublicKey());
         return getKey;
     }
-    /** 
+    /**
     * @Description: 解密
-    * @Param: [publicKey, code, qc] 
-    * @return: cn.bulaomeng.fragment.entity.User 
+    * @Param: [publicKey, code, qc]
+    * @return: cn.bulaomeng.fragment.entity.User
     * @Author: tjy
-    * @Date: 2019/9/25 
-    */ 
-    public static User deCode(PublicKeys publicKey,String code, QrcodeConfig qc){
+    * @Date: 2019/9/25
+    */
+    public static User BouncyCastleProviderdeCode(PublicKeys publicKey,String code, QrcodeConfig qc){
         String pk;
         //1.根据配置接口获取的协议头判断是否系统发放的码。
         String isHeader = code.substring(0,qc.getProtocolHeader().length());

@@ -35,12 +35,13 @@ public class DeCodeController {
                 //二维码
                 String code = "RFT://Ozjjq1GisBA9whdp8uNEdcM3JUiPGVcMc97QgD3JMrF9o5DHu8pgKK8CtuqxMGf97pIrbYJPAWHsaoKhFihTuw==|NmMVRVEJGLHr38w7AaHLfu+t2wYZ6VitCrW1qiKZLc0=";
                 //5.通过公钥解密，读取二维码信息
-                return  DeCodeUtil.deCode(publicKeys,code,qc);
+                return  DeCodeUtil.BouncyCastleProviderdeCode(publicKeys,code,qc);
             }
-            String code = "";
+           /* String code = "";
             String terminalNo = "DSF00002";
             //deCodeService.onlineDeCode(code,terminalNo,);
-            return null;
+            return null;*/
+           return txwxDeCodeService.onlineDeCodeGetData();
         }else {
 
             return txwxDeCodeService.deCodeGetData();
