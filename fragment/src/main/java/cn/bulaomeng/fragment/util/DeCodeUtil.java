@@ -6,6 +6,7 @@ import cn.bulaomeng.fragment.service.PublicKeysList;
 import cn.bulaomeng.fragment.service.QrcodeConfig;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -231,7 +232,7 @@ public class DeCodeUtil {
     * @Author: tjy
     * @Date: 2019/9/25
     */
-    public static User BouncyCastleProviderdeCode(PublicKeys publicKey,String code, QrcodeConfig qc){
+    public static User BouncyCastleProviderdeCode(PublicKeys publicKey,String code,QrcodeConfig qc){
         String pk;
         //1.根据配置接口获取的协议头判断是否系统发放的码。
         String isHeader = code.substring(0,qc.getProtocolHeader().length());
@@ -270,10 +271,10 @@ public class DeCodeUtil {
                 //当前时间 - 二维码生成时间
                 Integer endDate = Integer.parseInt(currentDate) - Integer.parseInt(codeDate);
                 //按照配置接口返回的参数 规定大于为超时需要给出提示过期
-              /*  if(endDate>=qc.getRiskControlTime()){
+                if(endDate>=qc.getRiskControlTime()){
                     System.out.println("二维码已过期！");
                     return null;
-                }*/
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -330,7 +331,7 @@ public class DeCodeUtil {
                 if(user.getCheckCode().equals(user.getLinkCheckCode())){
                     System.out.println("匹配校验码");
                 }else {
-                    return null;
+                    return user;
                 }
                 return user;
             } catch (Exception e) {
@@ -340,4 +341,27 @@ public class DeCodeUtil {
         }
         return null;
     }
+    /**
+     * @Description: 对象转map
+     * @Param: [object]
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @Author: tjy
+     * @Date: 2019/9/29
+     */
+    public static Map<String, Object> entityToMap(Object object) {
+        Map<String, Object> map = new HashMap();
+        for (Field field : object.getClass().getDeclaredFields()){
+            try {
+                boolean flag = field.isAccessible();
+                field.setAccessible(true);
+                Object o = field.get(object);
+                map.put(field.getName(), o);
+                field.setAccessible(flag);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return map;
+    }
+
 }

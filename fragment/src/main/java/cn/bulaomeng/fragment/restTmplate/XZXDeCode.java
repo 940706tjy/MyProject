@@ -50,7 +50,7 @@ public class XZXDeCode {
         //String appId="LibraryAccessControl";
         String appId="rft123456";
         String itemNo="10000100";
-        String outTradeNo="1000";
+        String outTradeNo=" ";
         String body="test";
         String nonceStr="ibuaiVcKdpRxkhJA";
         //需要提供

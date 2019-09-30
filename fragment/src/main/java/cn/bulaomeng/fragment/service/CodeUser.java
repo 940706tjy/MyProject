@@ -14,6 +14,15 @@ public class CodeUser {
     private String networkStatus; //联网状态
     private String sno;//用户编号
     private String name;//用户姓名
+    private String vcardNo;//虚拟卡号
+
+    public String getVcardNo() {
+        return vcardNo;
+    }
+
+    public void setVcardNo(String vcardNo) {
+        this.vcardNo = vcardNo;
+    }
 
     public String getReturnCode() {
         return returnCode;

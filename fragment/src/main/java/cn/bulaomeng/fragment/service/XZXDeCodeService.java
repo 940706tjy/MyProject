@@ -73,7 +73,7 @@ public class XZXDeCodeService {
         map.put("nonceStr",uuid);
         map.put("localAuthSign",mySign);
         par.setParam(map);
-        par .setUrl(CREATE_APP_SIGN);
+        par.setUrl(CREATE_APP_SIGN);
         //获取接口返回结果
         JSONObject js = reqeusRestTemplate(par);
         //将结果存入对象
@@ -312,12 +312,22 @@ public class XZXDeCodeService {
         //返回对象
         CodeUser user = new CodeUser();
         //RestTemplate中所需的Map参数
+        //将参数存入map，调用签名算法
+        SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
+        InputParam inputParam = new InputParam();
+        //生成随机数(32位)
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        parameters.put("authCode",authCode);
+        parameters.put("terminalNo",terminalNo);
+        parameters.put("nonceStr",uuid);
+        //调用签名算法，得到签名字符串
+        String mySign = DeCodeUtil.createSign(parameters,key);
         Map<String,Object> map = new HashMap<>();
         //authCode--二维码码文  terminalNo--终端编号
         map.put("authCode",authCode);
         map.put("terminalNo",terminalNo);
-        map.put("nonceStr",singData.getNonceStr());
-        map.put("localAuthSign",singData.getLocalAuthSign());
+        map.put("nonceStr",uuid);
+        map.put("localAuthSign",mySign);
         par.setParam(map);
         par.setUrl(GET_IDENTY_BY_QRCODE);
         JSONObject js = reqeusRestTemplate(par);
@@ -360,6 +370,7 @@ public class XZXDeCodeService {
                 //这里二维码状态可用只取 用户编号、姓名两个字段
                 user.setSno(js.getString("sno"));
                 user.setName(js.getString("name"));
+                user.setVcardNo(js.getString("vcardNo"));
             }
         }else {
             return null;
