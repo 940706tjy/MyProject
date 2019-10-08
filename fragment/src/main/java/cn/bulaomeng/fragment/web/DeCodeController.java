@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -42,7 +37,9 @@ public class DeCodeController {
                 QrcodeConfig qc = deCodeService.getCodeConfData(createAppSing);
                 //4.获取公钥
                 PublicKeys publicKeys = deCodeService.getPublicKey(createAppSing);
-                //二维码
+                System.out.println(redisTemplate.opsForValue().get("tutorial-name"));
+
+            //二维码
            /* List<String> list = new ArrayList<>();
             list.add("aaa");
             list.add("bbb");
