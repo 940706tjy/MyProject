@@ -1,3 +1,4 @@
+/*
 package cn.bulaomeng.fragment.service;
 
 import cn.bulaomeng.fragment.config.HttpsClientRequestFactory;
@@ -23,13 +24,15 @@ public class TimingGeTConfig {
 
     @Autowired
     private TxwxKeySecretMapper txwxKeySecretMapper;
-    /** 
+    */
+/**
     * @Description: 每天凌晨1点定时拉取配置
     * @Param: [] 
     * @return: void 
     * @Author: tjy
     * @Date: 2019/9/26 
-    */ 
+    *//*
+
     @Scheduled(cron = "0 0 1 * * ?")
     public void TimingGetConfig(){
         String uuid = UUID.randomUUID().toString().toUpperCase().replaceAll("-", "");
@@ -70,14 +73,17 @@ public class TimingGeTConfig {
         //在插入
         txwxKeySecretMapper.insertSelective(wxKeySecret);
     }
-    /**
+    */
+/**
      * @Description: 去掉换行及begin/end
      * @Param: [str]
      * @return: java.lang.String
      * @Author: tjy
      * @Date: 2019/9/26
-     */
+     *//*
+
     public  String deleteLine(String str){
         return str.replaceAll("\r|\n","").replaceAll("-----BEGIN PUBLIC KEY-----","").replaceAll("-----END PUBLIC KEY-----","");
     }
 }
+*/

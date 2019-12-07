@@ -15,8 +15,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
-    password: root
-    url: jdbc:postgresql://localhost:5432/postgres
+    password: xm1014
+    url: jdbc:postgresql://192.144.233.112:5432/postgres
   freemarker:
     template-loader-path: classpath:/templates/
 mybatis:
@@ -27,4 +27,3 @@ sso:
     path-url: "/ssoLogin"
 
 demo-mail.from : ${spring.mail.username}
-demo-mail.to : 956905891@qq.com

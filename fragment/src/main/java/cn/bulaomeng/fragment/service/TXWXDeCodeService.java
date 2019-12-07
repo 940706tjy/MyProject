@@ -1,3 +1,4 @@
+/*
 package cn.bulaomeng.fragment.service;
 
 import cn.bulaomeng.fragment.entity.TxwxKeySecret;
@@ -24,10 +25,12 @@ public class TXWXDeCodeService {
 
         TxwxKeySecret tx =  txwxKeySecretMapper.selectAll();
         //读取库中每天凌晨1点更新的配置
-       /*
+       */
+/*
         String publicKey = tx.getPublicKey();
         String totpKey = tx.getSecret();//密钥
-       */
+       *//*
+
         CampusCode campusCode = new CampusCode(publicKey, "1rJioSkDjSou0mTW");  //不需要解释规则
 
         //在线码
@@ -90,3 +93,4 @@ public class TXWXDeCodeService {
     }
 
 }
+*/

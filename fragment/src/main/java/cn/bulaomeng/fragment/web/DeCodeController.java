@@ -1,3 +1,4 @@
+/*
 package cn.bulaomeng.fragment.web;
 
 import cn.bulaomeng.fragment.service.*;
@@ -40,7 +41,8 @@ public class DeCodeController {
                 System.out.println(redisTemplate.opsForValue().get("tutorial-name"));
 
             //二维码
-           /* List<String> list = new ArrayList<>();
+           */
+/* List<String> list = new ArrayList<>();
             list.add("aaa");
             list.add("bbb");
             list.add("ccc");
@@ -53,12 +55,15 @@ public class DeCodeController {
                System.out.println(redisTemplate.opsForValue().get("rrew"));
                //redisTemplate.opsForList().rightPush("dens",list);
              List<Object> list1 = redisTemplate.opsForList().range("dens", 0, -1);
-            System.out.println(list1.get(0));*/
+            System.out.println(list1.get(0));*//*
+
             //5.通过公钥解密，读取二维码信息
                 return  DeCodeUtil.BouncyCastleProviderdeCode(publicKeys,code,qc);
-       /*     CreateAppSing createAppSing = deCodeService.getCreateAppSign();
+       */
+/*     CreateAppSing createAppSing = deCodeService.getCreateAppSign();
             String terminalNo = "DSF00002";
-            return deCodeService.onlineDeCode(code,terminalNo,createAppSing);*/
+            return deCodeService.onlineDeCode(code,terminalNo,createAppSing);*//*
+
            //return txwxDeCodeService.onlineDeCodeGetData();
         }else {
 
@@ -67,3 +72,4 @@ public class DeCodeController {
     }
 
 }
+*/

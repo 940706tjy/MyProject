@@ -22,8 +22,8 @@ public class FragmentService {
     private JavaMailSenderImpl mailSender;
     @Value("${demo-mail.from}")
     private String from;
-    @Value("${demo-mail.to}")
-    private String to;
+/*    @Value("${demo-mail.to}")
+    private String to;*/
     public List<Fragment> getListAll(){
          return   fragmentMapper.selectAll();
     }
