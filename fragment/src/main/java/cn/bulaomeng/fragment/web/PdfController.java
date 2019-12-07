@@ -5,6 +5,8 @@ import cn.bulaomeng.fragment.service.FragmentService;
 import cn.bulaomeng.fragment.util.PdfUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,9 @@ public class PdfController {
     private FreeMarkerConfigurer configurer;
     @Autowired
     private FragmentService fragmentService;
+
+    protected static Logger logger = LoggerFactory.getLogger(PdfController.class);
+
     /**
      * pdf预览
      *
@@ -42,6 +47,7 @@ public class PdfController {
     @RequestMapping(value = "/preview", method = RequestMethod.GET)
     @ApiOperation(value = "浏览PDF", notes = "")
     public void preview(HttpServletRequest request, HttpServletResponse response) {
+        logger.info("访问 preview");
         // 构造freemarker模板引擎参数,listVars.size()个数对应pdf页数
         List<Map<String,Object>> listVars = new ArrayList<>();
         Map<String,Object> variables = new HashMap<>();
@@ -61,6 +67,7 @@ public class PdfController {
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     @ApiOperation(value = "打印PDF", notes = "")
     public void download(HttpServletRequest request, HttpServletResponse response) {
+        logger.info("访问 download");
         List<Map<String,Object>> listVars = new ArrayList<>();
         Map<String,Object> variables = new HashMap<>();
         variables.put("title","碎片列表");

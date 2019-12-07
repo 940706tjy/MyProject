@@ -90,4 +90,18 @@ public class Fragment {
     public void setExchange(String exchange) {
         this.exchange = exchange == null ? null : exchange.trim();
     }
+
+    @Override
+    public String toString() {
+        return "Fragment{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", haveFragment='" + haveFragment + '\'' +
+                ", exchange='" + exchange + '\'' +
+                ", pageSize=" + pageSize +
+                ", pageNum=" + pageNum +
+                ", email='" + email + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }

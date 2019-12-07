@@ -8,6 +8,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +28,9 @@ public class FragmentWeb {
     private FragmentService fragmentService;
     @Autowired
     private FragmentMapper fragmentMapper;
+
+    protected static Logger logger = LoggerFactory.getLogger(FragmentWeb.class);
+
     /**
     * @Description:  
     * @Param: [] 
@@ -36,6 +41,7 @@ public class FragmentWeb {
     @PostMapping("/go")
     @ApiOperation(value = "查询全部", notes = "")
     public List<Fragment> getListAll(String name){
+        logger.info("访问 go 参数:" + name);
         System.out.println(name);
         return fragmentService.getListAll();
     }
@@ -49,7 +55,8 @@ public class FragmentWeb {
     @PostMapping("/selectByPrimaryKey")
     @ApiOperation(value = "根据条件查询参数", notes = "")
     public  PageInfo<Fragment> selectByPrimaryKey(@RequestBody Fragment fragment){
-            PageHelper.startPage(fragment.getPageNum(),fragment.getPageSize(),true);
+        logger.info("访问 selectByPrimaryKey 参数:" + fragment);
+        PageHelper.startPage(fragment.getPageNum(),fragment.getPageSize(),true);
             PageHelper.orderBy("date desc");
             PageInfo<Fragment> pageInfo=new PageInfo<>(fragmentService.selectByPrimaryKey(fragment));
         return pageInfo;
@@ -61,9 +68,10 @@ public class FragmentWeb {
     * @Author: tjy
     * @Date: 2019/5/21 
     */ 
-    @ApiOperation(value = "增加信息")
+    @ApiOperation(value = "增加信息",hidden = true)
     @PostMapping("/insert")
     public String insert(Fragment fragment){
+        logger.info("访问 insert 参数:" + fragment);
         Integer flag=fragmentService.insert(fragment);
         if(flag==0){
             return "失败";
@@ -73,19 +81,23 @@ public class FragmentWeb {
     @PostMapping("/user")
     @ApiOperation(value = "数组")
     public List<Map<String,Object>> getArray(){
+        logger.info("访问 user 参数:" );
 
         return  fragmentMapper.selectByPr();
     }
     @PostMapping("/restTemplate")
     @ApiOperation(value = "数组")
     public List<String> restTemplate(@RequestBody Fragment fragment){
+        logger.info("访问 restTemplate 参数:" );
+
         return  fragmentService.getListByArray(fragment.getName());
     }
 
     @PostMapping("/email")
     @ApiOperation(value = "发送邮件")
     public String goEmail(String email){
-       return  fragmentService.goEmail(email);
+        logger.info("访问 email 参数:" + email);
+        return  fragmentService.goEmail(email);
     }
 
 

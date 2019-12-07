@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +35,7 @@ import java.util.List;
 @Api(value = "导入/出excel")
 @RequestMapping("/excel")
 public class ExcelController {
+    protected static Logger logger = LoggerFactory.getLogger(ExcelController.class);
     @Autowired
     private FragmentService fragmentService;
     @Resource
@@ -40,6 +43,7 @@ public class ExcelController {
     @ApiOperation(value = "excel下载")
     @GetMapping("/downloadExcel")
     public void  downloadExcel(HttpServletResponse response) throws IOException {
+        logger.info("访问 downloadExcel");
         HSSFWorkbook workbook = new HSSFWorkbook();
         //创建一个Excel表单,参数为sheet的名字
         HSSFSheet sheet = workbook.createSheet("碎片列表");
@@ -107,8 +111,9 @@ public class ExcelController {
     }
 
     @PostMapping("/import")
-    @ApiOperation(value = "excel导入")
+    @ApiOperation(value = "excel导入",hidden = true)
     public String upload(MultipartFile file) {
+        logger.info("访问 import");
         if (file==null) {
            return "文件内容为空";
         }
@@ -158,6 +163,7 @@ public class ExcelController {
     @ApiOperation("下载模板")
     @GetMapping("/downloadModel")
     public void downloadTemplate(HttpServletResponse response, HttpServletRequest request) {
+        logger.info("访问 downloadModel");
         InputStream inputStream = null;
         ServletOutputStream servletOutputStream = null;
         try {
