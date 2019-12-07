@@ -16,7 +16,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: xm1014
-    url: jdbc:postgresql://192.144.233.112:5432/postgres
+    url: jdbc:postgresql://localhost:5432/postgres
   freemarker:
     template-loader-path: classpath:/templates/
 mybatis:
