@@ -15,7 +15,7 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
-    password: root
+    password: xm1014
     url: jdbc:postgresql://localhost:5432/postgres
   freemarker:
     template-loader-path: classpath:/templates/
