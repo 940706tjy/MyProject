@@ -2,8 +2,6 @@ package cn.bulaomeng.fragment.web;
 
 import cn.bulaomeng.fragment.entity.Fragment;
 import cn.bulaomeng.fragment.service.FragmentService;
-import cn.bulaomeng.fragment.service.WebSocketServer;
-import cn.bulaomeng.fragment.util.ExcelUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -169,7 +167,7 @@ public class ExcelController {
      * @Param []
      * @return void
      **/
-    @ApiOperation("easypoi下载")
+/*    @ApiOperation("easypoi下载")
     @GetMapping("/downloadEasyPoi")
     public void downloadEasyPoi(HttpServletResponse response){
         logger.info("访问 downloadEasyPoi");
@@ -183,7 +181,7 @@ public class ExcelController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
     @ApiOperation("下载模板")
     @GetMapping("/downloadModel")
     public void downloadTemplate(HttpServletResponse response, HttpServletRequest request) {
@@ -225,11 +223,11 @@ public class ExcelController {
         }
     }
 
-    @GetMapping("/testAsync")
+ /*   @GetMapping("/testAsync")
     public String testAsync(HttpServletResponse response, HttpServletRequest request) {
         long start = System.currentTimeMillis();
         fragmentService.testAsync();
         return String.format("任务执行成功,耗时{%s}", System.currentTimeMillis() - start);
-    }
+    }*/
 
 }
