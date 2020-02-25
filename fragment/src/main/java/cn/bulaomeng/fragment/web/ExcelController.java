@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -159,7 +160,28 @@ public class ExcelController {
         return "模板内容有误，请重新填写";
 
     }
+    /**
+     * @Author tjy
+     * @Description 
+     * @Date 2019/12/10 21:30
+     * @Param []
+     * @return void
+     **/
+/*    @ApiOperation("easypoi下载")
+    @GetMapping("/downloadEasyPoi")
+    public void downloadEasyPoi(HttpServletResponse response){
+        logger.info("访问 downloadEasyPoi");
+        try {
+            List<Fragment> list = fragmentService.getListAll();
+            if(list.size() > 0){
+                WebSocketServer.sendInfo("成功导出","20");
+            }
+            ExcelUtil.exportExcel(list,"碎片交换","测试啊",Fragment.class,"测试.xls",response);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
     @ApiOperation("下载模板")
     @GetMapping("/downloadModel")
     public void downloadTemplate(HttpServletResponse response, HttpServletRequest request) {
@@ -200,4 +222,12 @@ public class ExcelController {
             }
         }
     }
+
+ /*   @GetMapping("/testAsync")
+    public String testAsync(HttpServletResponse response, HttpServletRequest request) {
+        long start = System.currentTimeMillis();
+        fragmentService.testAsync();
+        return String.format("任务执行成功,耗时{%s}", System.currentTimeMillis() - start);
+    }*/
+
 }
