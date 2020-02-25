@@ -2,26 +2,13 @@
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-<localRepository>D:\tools\maven\apache-maven-3.2.3\repo</localRepository>
-    
-	
- <mirror>
-      <id>mirrorId</id>
-      <mirrorOf>repositoryId</mirrorOf>
-      <name>Human Readable Name for this Mirror.</name>
-      <url>http://my.repository.com/repo/path</url>
-    </mirror>
-    <mirror>
-      <!--This sends everything else to /public -->
-      <id>nexus</id>
-      <mirrorOf>*</mirrorOf> 
-      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-    </mirror>
-    <mirror>
-      <!--This is used to direct the public snapshots repo in the 
-          profile below over to a different nexus group -->
-      <id>nexus-public-snapshots</id>
-      <mirrorOf>public-snapshots</mirrorOf> 
-      <url>http://maven.aliyun.com/nexus/content/repositories/snapshots/</url>
-    </mirror>
+ <localRepository>D:\tools\maven\apache-maven-3.2.3\repo</localRepository>
+ <mirrors>
+  <mirror>
+   <id>nexus</id>
+   <mirrorOf>*</mirrorOf>
+   <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+  </mirror>
+ </mirrors>
+
 </settings>
