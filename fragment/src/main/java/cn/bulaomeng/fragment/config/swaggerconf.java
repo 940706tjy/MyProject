@@ -21,6 +21,7 @@ public class swaggerconf {
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
+                .enable(true)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("cn.bulaomeng.fragment.web"))
                 .paths(PathSelectors.any())
