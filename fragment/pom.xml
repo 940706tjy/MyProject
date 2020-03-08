@@ -34,6 +34,12 @@
             <artifactId>pagehelper</artifactId>
             <version>4.2.1</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.1.21</version>
+        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -201,6 +207,7 @@
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
+            <!--使用docker-maven-plugin插件-->
         </plugins>
      <!--   <resources>
             <resource>
