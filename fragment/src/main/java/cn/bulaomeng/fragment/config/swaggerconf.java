@@ -1,5 +1,6 @@
 package cn.bulaomeng.fragment.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -17,11 +18,16 @@ import springfox.documentation.spring.web.plugins.Docket;
 */ 
 @Configuration
 public class swaggerconf {
+
+    @Value("${swagger.config}")
+    private boolean enable;
+
+
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
-                .enable(true)
+                .enable(enable)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("cn.bulaomeng.fragment.web"))
                 .paths(PathSelectors.any())

@@ -74,3 +74,5 @@ sso:
 demo-mail.from : ${spring.mail.username}
 logging:
   file: log/springboot.log
+swagger:
+  config: true

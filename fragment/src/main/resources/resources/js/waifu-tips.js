@@ -66,8 +66,8 @@ live2d_settings['waifuDraggableRevert'] = true;         // 松开鼠标还原拖
 // 其他杂项设置
 live2d_settings['l2dVersion']           = '1.4.2';        // 当前版本
 live2d_settings['l2dVerDate']           = '2018.11.12'; // 版本更新日期
-live2d_settings['homePageUrl']          = 'http://qingjiujiu.wang/message.html';       // 主页地址，可选 'auto'(自动), '{URL 网址}'
-live2d_settings['aboutPageUrl']         = 'http://qingjiujiu.wang';   // 关于页地址, '{URL 网址}'
+live2d_settings['homePageUrl']          = 'http://www.qingjiusmile.com/message.html';       // 主页地址，可选 'auto'(自动), '{URL 网址}'
+live2d_settings['aboutPageUrl']         = 'http://www.qingjiusmile.com';   // 关于页地址, '{URL 网址}'
 live2d_settings['screenshotCaptureName']= 'live2d.png'; // 看板娘截图文件名，例如 'live2d.png'
 
 /****************************************************************************************************/
