@@ -1,7 +1,7 @@
 package cn.bulaomeng.fragment.web;
 
 import cn.bulaomeng.fragment.entity.Fragment;
-import cn.bulaomeng.fragment.mapper.FragmentMapper;
+import cn.bulaomeng.fragment.mapper.master.FragmentMapper;
 import cn.bulaomeng.fragment.service.FragmentService;
 import cn.bulaomeng.fragment.util.QrCodeUtils;
 import com.github.pagehelper.PageHelper;

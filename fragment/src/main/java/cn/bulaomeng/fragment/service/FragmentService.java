@@ -1,7 +1,7 @@
 package cn.bulaomeng.fragment.service;
 
 import cn.bulaomeng.fragment.entity.Fragment;
-import cn.bulaomeng.fragment.mapper.FragmentMapper;
+import cn.bulaomeng.fragment.mapper.master.FragmentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;

@@ -1,7 +1,6 @@
-package cn.bulaomeng.fragment.mapper;
+package cn.bulaomeng.fragment.mapper.slave;
 
 import cn.bulaomeng.fragment.entity.Fragment;
-import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,7 @@ import java.util.Map;
 
 @Mapper
 @Component
-public interface FragmentMapper {
+public interface Fragment1Mapper {
     List<Fragment> selectAll();
 
     int insert(Fragment record);
@@ -26,7 +25,7 @@ public interface FragmentMapper {
 
     int updateByPrimaryKey(Fragment record);
 
-    List<String> getListByArray(@Param("name")String name);
+    List<String> getListByArray(@Param("name") String name);
 
     List<Map<String,Object>> selectByPr();
 
