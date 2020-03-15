@@ -19,6 +19,11 @@ spring:
 
   freemarker:
     template-loader-path: classpath:/templates/
+  rabbitmq:
+    password: guest
+    username: guest
+    port: 5672
+    host: 192.168.0.119
 mybatis:
   mapper-locations: classpath:mybatis/mapper/*.xml
   config-location: classpath:mybatis/mybatis-config.xml
