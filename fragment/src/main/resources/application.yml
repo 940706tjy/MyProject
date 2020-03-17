@@ -1,7 +1,17 @@
-server:
+我server:
   port: 8081
   connection-timeout: 60000
 spring:
+  rabbitmq:
+    host: 10.0.96.99
+    port: 5672
+    username: guest
+    password: guest
+    exchangeType: topic
+    exchange: testTopic
+    queueName: topicLog
+    exchangeDurable: true
+    routingKey: testKey
   mail:
     host: smtp.qq.com
     username: 1420408096@qq.com
@@ -19,11 +29,6 @@ spring:
 
   freemarker:
     template-loader-path: classpath:/templates/
-  rabbitmq:
-    password: guest
-    username: guest
-    port: 5672
-    host: 192.168.0.119
 mybatis:
   mapper-locations: classpath:mybatis/mapper/*.xml
   config-location: classpath:mybatis/mybatis-config.xml

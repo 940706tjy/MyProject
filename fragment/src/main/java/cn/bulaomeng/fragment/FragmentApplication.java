@@ -1,5 +1,6 @@
 package cn.bulaomeng.fragment;
 
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -11,6 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @RestController
 @ServletComponentScan
+@EnableRabbit
 public class FragmentApplication {
     public static void main(String[] args) {
         SpringApplication.run(FragmentApplication.class, args);

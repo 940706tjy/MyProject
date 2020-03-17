@@ -2,7 +2,7 @@ package cn.bulaomeng.fragment.config.rabbitmq;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "spring.rabbit")
+@ConfigurationProperties(prefix = "spring.rabbitmq")
 public class RabbitmqParam {
 
     // ip

@@ -1,5 +1,8 @@
-package cn.bulaomeng.fragment.config.rabbitmq;
+package cn.bulaomeng.fragment.service.rabbitmq;
 
+import cn.bulaomeng.fragment.config.rabbitmq.RabbitmqParam;
+import cn.bulaomeng.fragment.config.rabbitmq.Receiver;
+import cn.bulaomeng.fragment.service.rabbitmq.RabbitmqService;
 import com.google.common.base.Strings;
 
 import org.springframework.amqp.core.*;
