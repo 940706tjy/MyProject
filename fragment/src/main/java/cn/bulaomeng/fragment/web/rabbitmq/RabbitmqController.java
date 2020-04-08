@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RequestMapping("/rabbitmq")
 @RestController
-@Api(description = "rabbitmq接口")
+//@Api(description = "rabbitmq接口")
 public class RabbitmqController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class RabbitmqController {
     @Autowired
     private MqSendService sendService;
 
-    @PostMapping("/test")
+    //@PostMapping("/test")
     public void testMq(){
         Map<String,Object> map = new HashMap<>();
         map.put("userId",1);

@@ -1,17 +1,41 @@
-我server:
+server:
   port: 8081
   connection-timeout: 60000
+mqtt:
+  userName: admin
+  password: 123456
+  url: tcp://10.17.0.12:1883
+  #url: tcp://10.0.96.99:1883
+  #生产者
+  producer:
+    #queues设置
+    #clientId: MQTT_FX_Client.producer.base
+    clientId: MQTT_FX_Client.producer.uip-base.publisher.base
+    #生产者 Routing key
+    #defaultTopic: testRoutingKey
+    defaultTopic: jdev.att.706037909.api
+  #消费者
+  consumer:
+    #queues设置
+    #clientId: MQTT_FX_Client.consumer.base
+    clientId: MQTT_FX_Client.consumer.uip-base.subscriber.base
+    #消费者 Routing key （多个逗号分隔）
+    #defaultTopic: testRoutingKey,demoRoutingKey
+    defaultTopic: jdev/att/706037909/login,jdev/att/706037909/will,jdev/att/706037909/record
 spring:
+  data:
+    elasticsearch:
   rabbitmq:
-    host: 10.0.96.99
+    host: 192.168.0.123
     port: 5672
-    username: guest
-    password: guest
-    exchangeType: topic
-    exchange: testTopic
-    queueName: topicLog
+    username: admin
+    password: admin
     exchangeDurable: true
-    routingKey: testKey
+#    listener:
+#      direct:
+#        acknowledge-mode: manual
+#      simple:
+#        acknowledge-mode: manual
   mail:
     host: smtp.qq.com
     username: 1420408096@qq.com
