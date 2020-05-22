@@ -10,12 +10,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.util.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -119,6 +123,45 @@ public class ExcelUtil {
             logger.error(e.getMessage());
         }
         return list;
+    }
+
+
+    /**
+     * @Description: 下载模板公用
+     * @Author: tjy
+     * @Date: 2020/1/6
+     */
+    public static void downloadTemplate(HttpServletResponse response, String fileName,
+                                        org.springframework.core.io.Resource resource){
+        InputStream inputStream = null;
+        ServletOutputStream servletOutputStream = null;
+        try {
+            response.addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" +
+                    URLEncoder.encode(fileName, "UTF-8") + "\"; filename*=utf-8''" + URLEncoder.encode(fileName, "UTF-8"));
+
+            inputStream = resource.getInputStream();
+            servletOutputStream = response.getOutputStream();
+            IOUtils.copy(inputStream, servletOutputStream);
+            response.flushBuffer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (servletOutputStream != null) {
+                    servletOutputStream.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                // java gc回收
+                System.gc();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
