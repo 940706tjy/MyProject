@@ -86,11 +86,12 @@
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-mqtt</artifactId>
         </dependency>
-  <!--      <dependency>
+        <!-- 添加自定义配置 -->
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>

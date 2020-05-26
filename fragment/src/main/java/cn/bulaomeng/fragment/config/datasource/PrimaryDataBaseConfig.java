@@ -1,7 +1,6 @@
 package cn.bulaomeng.fragment.config.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import lombok.Data;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -17,11 +16,10 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-/**
- * @Author: zeroJun
- * @Date: 2018/8/16 16:49
- * @Description: 主数据源配置类
- */
+/** 主数据源配置
+ * @author tjy
+ * @date 2018/8/16 16:49
+ **/
 @Configuration
 // 前缀为primary.datasource.druid的配置信息
 @MapperScan(basePackages = PrimaryDataBaseConfig.PACKAGE, sqlSessionFactoryRef = "primarySqlSessionFactory")

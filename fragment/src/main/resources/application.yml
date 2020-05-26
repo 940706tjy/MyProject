@@ -125,3 +125,16 @@ second:
       filters: stat,wall,slf4j,config
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+
+#配置后台监控
+#不配置默认账号密码为下方密码
+#druid:
+#  config:
+#    #白名单
+#    allow: 127.0.0.1
+#    #黑名单
+#    deny:
+#    #用户名
+#    loginUsername: demo
+#    #密码
+#    loginPassword: 123
