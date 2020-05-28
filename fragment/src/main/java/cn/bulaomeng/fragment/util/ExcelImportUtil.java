@@ -1,10 +1,16 @@
 package cn.bulaomeng.fragment.util;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -62,5 +68,26 @@ public class ExcelImportUtil {
         }
         return result;
     }
+    public static File tempFileForImport(@RequestParam MultipartFile file, HttpServletRequest request, File tempFile) {
+        if (!file.isEmpty()) {
+            String filePath = request.getSession().getServletContext().getRealPath("/") + "upload" + File.separator;
+            File dir = new File(filePath);
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+
+            String path = filePath + file.getOriginalFilename();
+
+            try {
+                tempFile = new File(path);
+                FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return tempFile;
+    }
+
+
 }
 

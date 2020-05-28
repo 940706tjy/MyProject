@@ -23,8 +23,23 @@ mqtt:
     #defaultTopic: testRoutingKey,demoRoutingKey
     defaultTopic: jdev/att/706037909/login,jdev/att/706037909/will,jdev/att/706037909/record
 spring:
-  data:
-    elasticsearch:
+  redis:
+    host: 10.17.0.12
+    port: 6379
+    pool:
+      maxTotal: 1000
+      maxWaitMillis: 10000
+      testOnBorrow: true
+      testOnReturn: true
+      timeBetweenEvictionRunsMillis: 30000
+      testWhileIdle: true
+      numTestsPerEvictionRun: 50
+    jedis:
+      pool:
+        max-idle: 100
+        min-idle: 50
+#  data:
+#    elasticsearch:
   rabbitmq:
     host: 192.168.0.123
     port: 5672

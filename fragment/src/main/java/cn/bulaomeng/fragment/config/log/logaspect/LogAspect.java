@@ -3,8 +3,7 @@ package cn.bulaomeng.fragment.config.log.logaspect;
 import cn.bulaomeng.fragment.util.JsonUtil;
 import cn.bulaomeng.fragment.util.request.IpUtil;
 import cn.bulaomeng.fragment.util.request.JsonResult;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -25,9 +24,9 @@ import java.util.Objects;
  */
 @Aspect
 @Component
+@Slf4j
 public class LogAspect {
 
-    private static final Logger log = LogManager.getLogger(LogAspect.class);
 
 
 

@@ -1,3 +1,4 @@
+/*
 package cn.bulaomeng.fragment.config.mqtt;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +21,14 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
 
+*/
 /**
  * mqtt 配置类
  *
  * @author tjy
  * @date 2020-03-10 08:41
- **/
+ **//*
+
 //@Configuration
 @IntegrationComponentScan
 @Slf4j
@@ -33,13 +36,17 @@ import org.springframework.messaging.MessageHandler;
 public class MqttConfiguration {
 	private static final byte[] WILL_DATA;
 
-	/**
+	*/
+/**
 	 * 订阅的bean名称
-	 */
+	 *//*
+
 	public static final String CHANNEL_NAME_IN = "mqttInboundChannel";
-	/**
+	*/
+/**
 	 * 发布的bean名称
-	 */
+	 *//*
+
 	public static final String CHANNEL_NAME_OUT = "mqttOutboundChannel";
 
 
@@ -49,10 +56,13 @@ public class MqttConfiguration {
 	static {
 		WILL_DATA = "offline".getBytes();
 	}
-	/**
+	*/
+/**
 	 * MQTT连接器选项()
 	 *
-	 */
+	 *//*
+
+*/
 /*	@Bean
 	public MqttPahoClientFactory mqttClientFactory() {
 		DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
@@ -69,13 +79,16 @@ public class MqttConfiguration {
 		// 设置“遗嘱”消息的话题，若客户端与服务器之间的连接意外中断，服务器将发布客户端的“遗嘱”消息。
 		factory.setWill(new DefaultMqttPahoClientFactory.Will("willTopic",WILL_DATA,1,false));
 		return factory;
-	}*/
+	}*//*
 
-	/**
+
+	*/
+/**
 	 * MQTT连接器选项()
 	 *
 	 * @return {@link MqttConnectOptions}
-	 */
+	 *//*
+
 	@Bean
 	public MqttConnectOptions getMqttConnectOptions() {
 		MqttConnectOptions options = new MqttConnectOptions();
@@ -97,11 +110,13 @@ public class MqttConfiguration {
 	}
 
 
-	/**
+	*/
+/**
 	 * MQTT客户端（这里有版本差异 1.5.8中没有对应的setConnectionOptions方法）
 	 *
 	 * @return {@link MqttPahoClientFactory}
-	 */
+	 *//*
+
 	@Bean
 	public MqttPahoClientFactory mqttClientFactory() {
 		DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
@@ -112,21 +127,25 @@ public class MqttConfiguration {
 
 
 
-	/**
+	*/
+/**
 	 * MQTT信息通道（生产者）
 	 *
 	 * @return {@link MessageChannel}
-	 */
+	 *//*
+
 	@Bean(name = CHANNEL_NAME_OUT)
 	public MessageChannel mqttOutboundChannel() {
 		return new DirectChannel();
 	}
 
-	/**
+	*/
+/**
 	 * MQTT消息处理器（生产者）
 	 *
 	 * @return {@link MessageHandler}
-	 */
+	 *//*
+
 	@Bean
 	@ServiceActivator(inputChannel = CHANNEL_NAME_OUT)
 	public MessageHandler mqttOutbound() {
@@ -138,11 +157,13 @@ public class MqttConfiguration {
 		return messageHandler;
 	}
 
-	/**
+	*/
+/**
 	 * MQTT消息订阅绑定（消费者）
 	 *
 	 * @return {@link org.springframework.integration.core.MessageProducer}
-	 */
+	 *//*
+
 	@Bean
 	public MessageProducer inbound() {
 		// 可以同时消费（订阅）多个Topic
@@ -158,11 +179,13 @@ public class MqttConfiguration {
 		return adapter;
 	}
 
-	/**
+	*/
+/**
 	 * MQTT信息通道（消费者）
 	 *
 	 * @return {@link MessageChannel}
-	 */
+	 *//*
+
 	@Bean(name = CHANNEL_NAME_IN)
 	public MessageChannel mqttInboundChannel() {
 		return new DirectChannel();
@@ -170,3 +193,4 @@ public class MqttConfiguration {
 
 }
 
+*/
