@@ -1,17 +1,17 @@
-package cn.bulaomeng.fragment.service.rabbitmq;
+package cn.bulaomeng.fragment.config.rabbitmq;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
  
+
 /**
- * @Author : JCccc
- * @CreateTime : 2019/9/3
- * @Description :
+ * RabbitMQ direct配置
+ * @author tjy
+ * @date 2020/5/28
  **/
 @Configuration
 public class DirectRabbitConfig {
@@ -22,9 +22,9 @@ public class DirectRabbitConfig {
      * @return
      */
     @Bean
-    public Queue TestDirectQueue() {
+    public Queue testDirectQueue() {
         //true 是否持久
-        return new Queue("TestDirectQueue",true);
+        return new Queue("testDirectQueue",true);
     }
 
     /**
@@ -32,8 +32,8 @@ public class DirectRabbitConfig {
      * @return
      */
     @Bean
-    DirectExchange TestDirectExchange() {
-        return new DirectExchange("TestDirectExchange");
+    DirectExchange testDirectExchange() {
+        return new DirectExchange("testDirectExchange");
     }
 
     /**
@@ -42,7 +42,8 @@ public class DirectRabbitConfig {
      */
     @Bean
     Binding bindingDirect() {
-        return BindingBuilder.bind(TestDirectQueue()).to(TestDirectExchange()).with("TestDirectRouting");
+        return BindingBuilder.bind(testDirectQueue()).to(testDirectExchange()).
+                with("TestDirectRouting");
     }
 
     @Bean

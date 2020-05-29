@@ -41,11 +41,17 @@ spring:
 #  data:
 #    elasticsearch:
   rabbitmq:
-    host: 192.168.0.123
+    host: 10.0.96.99
     port: 5672
     username: admin
     password: admin
     exchangeDurable: true
+    #异常情况重新请求次数
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 5
 #    listener:
 #      direct:
 #        acknowledge-mode: manual
