@@ -24,7 +24,7 @@ mqtt:
     defaultTopic: jdev/att/706037909/login,jdev/att/706037909/will,jdev/att/706037909/record
 spring:
   redis:
-    host: 10.17.0.12
+    host: localhost
     port: 6379
     pool:
       maxTotal: 1000
@@ -41,7 +41,7 @@ spring:
 #  data:
 #    elasticsearch:
   rabbitmq:
-    host: 10.0.96.99
+    host: 192.168.0.107
     port: 5672
     username: admin
     password: admin

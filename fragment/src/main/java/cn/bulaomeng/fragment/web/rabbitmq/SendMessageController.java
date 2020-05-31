@@ -82,28 +82,42 @@ public class SendMessageController {
         return "ok";
     }
 
-    @RabbitListener(queues = DelayedTopicRabbitConfig.TIMEOUT_TRADE_QUEUE_NAME)
+    @RabbitListener(queues = "TestDirectQueue")
     public void getData(Message message, Object msg, Channel channel, @Headers Map<String, Object> map) {
 
         log.info("接收到请求时间 [{}]", DateUtil.nowTimestamp());
-        SendMessageController.log.info("{}", message.getBody());
-        SendMessageController.log.info("[{}]", msg);
-        SendMessageController.log.info("[{}]", map);
+        log.info(" [{}]", message.getBody());
+        log.info("[{}]", msg);
+        log.info("[{}]", map);
+        final long deliveryTag = message.getMessageProperties().getDeliveryTag();
         JSONObject json;
         if (msg instanceof String) {
             json = JSONObject.parseObject((String) msg);
         } else if (msg instanceof byte[]) {
             json = (JSONObject) JSONObject.parse((byte[]) msg);
         } else if (msg instanceof Message) {
-            //获得body体重的数据
+            //获得body体的数据
             json = (JSONObject) JSONObject.parse(((Message) msg).getBody());
         } else {
-            log.error("optLog.# === 未知数据类型,已经忽略:{}", msg);
+            log.error(" === 未知数据类型,已经忽略:{}", msg);
+            try {
+                channel.basicAck(deliveryTag, false);
+            } catch (IOException e) {
+                log.error("mq手动ack异常 [{}]", e.getMessage(), e);
+            }
             return;
         }
 
-        if (null == json || !json.containsKey("msgType") || !json.containsKey("data")) {
+        System.out.println(json.containsKey("msgType"));
+        System.out.println(json.containsKey("data"));
+        if (!json.containsKey("msgType") || !json.containsKey("data")) {
             log.error("mq接收的数据格式错误，记录忽略:{}", json);
+            log.error(" === 未知数据类型,已经忽略:{}", msg);
+            try {
+                channel.basicAck(deliveryTag, false);
+            } catch (IOException e) {
+                log.error("mq手动ack异常 [{}]", e.getMessage(), e);
+            }
             return;
         }
         //获取所标记的名称
@@ -113,7 +127,7 @@ public class SendMessageController {
         Fragment fragment = json.getObject("data", Fragment.class);
         log.info("获得的对象为：[{}]", fragment);
         log.info("Type : [{}]", msgType);
-        final long deliveryTag = message.getMessageProperties().getDeliveryTag();
+
         //判断类型传入消息的类型
         try {
             channel.basicAck(deliveryTag, false);
@@ -121,11 +135,11 @@ public class SendMessageController {
             try {
                 channel.basicNack(deliveryTag, false, true);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                log.error("mq手动ack异常 [{}]", e.getMessage(), e);
             }
-            e.printStackTrace();
+            log.error("mq手动ack异常 [{}]", e.getMessage(), e);
+
         }
     }
-
 
 }
