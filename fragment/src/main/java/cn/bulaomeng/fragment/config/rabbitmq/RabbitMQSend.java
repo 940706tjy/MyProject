@@ -1,6 +1,5 @@
 package cn.bulaomeng.fragment.config.rabbitmq;
 
-import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,9 +31,12 @@ public interface RabbitMQSend {
 
 
     /**
-     * 延时队列
-     *
+     * 延时队列（参数ms）
      */
-    void delaySendMsg(String exchange, String routingKey, Object message,
-                       MessagePostProcessor messagePostProcessor);
+    void delaySendMsg(String exchange, String routingKey, Object message, Integer delayTime);
+
+    /**
+     * 延时队列（自定义时间）
+     */
+    void formatDelaySendMsg(String exchange, String routingKey, Object message, String formatDelayTime) throws Exception;
 }
