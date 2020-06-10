@@ -90,4 +90,75 @@ public class LocalDateTimeUtils {
                 .withNano(999999999);
     }
 
+    /**
+     *
+     * toNanos()// 纳秒
+     *
+     * toMillis()// 毫秒
+     *
+     * toMinutes()// 分钟
+     *
+     * toHours()// 小时
+     *
+     * toDays()// 天数
+     */
+
+
+    // 分钟
+    private static final String MINUTES = "min";
+    // 纳秒
+    private static final String NANOS = "ns";
+    // 毫秒
+    private static final String MILLIS = "ms";
+    // 小时
+    private static final String HOURS = "hour";
+    // 天
+    private static final String DAYS = "day";
+    // 秒
+    private static final String SECONDS = "second";
+
+    /**
+     * 对比两个时间差值
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @param format    选择要返回的时间
+     * @author tjy
+     * @date 2020/6/10
+     **/
+    public static long betweenTwoTime(LocalDateTime startTime,
+                                            LocalDateTime endTime, String format) {
+        long time = 0;
+        Duration duration = Duration.between(startTime, endTime);
+        switch (format) {
+            // 分钟
+            case MINUTES:
+                time = duration.toMinutes();
+                break;
+            // 纳秒
+            case NANOS:
+                time = duration.toNanos();
+                break;
+            // 毫秒
+            case MILLIS:
+                time = duration.toMillis();
+                break;
+            // 小时
+            case HOURS:
+                time = duration.toMillis();
+                break;
+            // 天
+            case DAYS:
+                time = duration.toDays();
+                break;
+            // 秒
+            case SECONDS:
+                time = duration.getSeconds();
+                break;
+            default:
+                break;
+        }
+        return time;
+    }
+
 }
