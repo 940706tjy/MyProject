@@ -1,6 +1,8 @@
 package cn.bulaomeng.fragment.base;
 
+import cn.bulaomeng.fragment.util.page.PageSearch;
 import cn.bulaomeng.fragment.util.request.JsonResult;
+import com.github.pagehelper.PageHelper;
 
 import static cn.bulaomeng.fragment.constant.CommConstant.*;
 
@@ -9,6 +11,10 @@ public class BaseClass {
     public BaseClass() {
     }
 
+    protected void setPageHelper(PageSearch<?> pageSearch) {
+        PageHelper.startPage(pageSearch.getPageIndex(), pageSearch.getPageSize(), pageSearch.getCount());
+        PageHelper.orderBy(pageSearch.getOrderBy() != null ? pageSearch.getOrderBy().trim() : pageSearch.getOrderBy());
+    }
 
     protected <T> JsonResult<T> message(Integer code, String msg, T data) {
         JsonResult<T> jsonResult = new JsonResult();
