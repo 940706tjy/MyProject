@@ -3,6 +3,8 @@ package cn.bulaomeng.fragment.base;
 import cn.bulaomeng.fragment.util.page.PageSearch;
 import cn.bulaomeng.fragment.util.request.JsonResult;
 import com.github.pagehelper.PageHelper;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 
 import static cn.bulaomeng.fragment.constant.CommConstant.*;
 
@@ -47,6 +49,9 @@ public class BaseClass {
     protected <T> JsonResult<T> failMsg(String message) {
         return this.failMsg(FAILED_FLAG,message, null);
     }
+    protected <T> JsonResult<T> failMsg(String message, T data) {
+        return this.failMsg(FAILED_FLAG, message, data);
+    }
 
     protected <T> JsonResult<T> failMsg() {
         return this.failMsg(FAILED_MSG);
@@ -62,6 +67,29 @@ public class BaseClass {
 
     protected String objToStr(Object res) {
         return res.toString();
+    }
+
+
+    /**
+     * 使用Validator + BindResult进行校验
+     *
+     * @author tjy
+     * @date 2020/7/24
+     **/
+    protected <T> JsonResult<T> checkResult(BindingResult bindingResult, T data) {
+
+        for (ObjectError error : bindingResult.getAllErrors()) {
+            return failMsg(error.getDefaultMessage(), data);
+        }
+        return succMsgData(data);
+    }
+
+    protected <T> JsonResult<T> checkResult(BindingResult bindingResult) {
+
+        for (ObjectError error : bindingResult.getAllErrors()) {
+            return failMsg(error.getDefaultMessage());
+        }
+        return succMsg();
     }
 
 }
