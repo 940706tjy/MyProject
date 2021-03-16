@@ -19,6 +19,16 @@ public class Fragment {
 
     private  String email;
 
+    private  String userNo;
+
+    public String getUserNo() {
+        return userNo;
+    }
+
+    public void setUserNo(String userNo) {
+        this.userNo = userNo;
+    }
+
     public String getEmail() {
         return email;
     }
