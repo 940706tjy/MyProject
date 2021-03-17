@@ -21,14 +21,7 @@ public class RestTemplateConfig {
         // 的编码集为"ISO-8859-1"）
         List<HttpMessageConverter<?>> messageConverters = restTemplate
                 .getMessageConverters();
-        Iterator<HttpMessageConverter<?>> iterator = messageConverters
-                .iterator();
-        while (iterator.hasNext()) {
-            HttpMessageConverter<?> converter = iterator.next();
-            if (converter instanceof StringHttpMessageConverter) {
-                iterator.remove();
-            }
-        }
+        messageConverters.removeIf(converter -> converter instanceof StringHttpMessageConverter);
         messageConverters.add(0,
                 new StringHttpMessageConverter(Charset.forName("UTF-8")));
         return restTemplate;
