@@ -7,22 +7,22 @@ package cn.bulaomeng.fragment.util.test;
 
 import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.codec.Base64Encoder;
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
  * RSA签名验签类
  */
-public class RSASignature {
+public class RSASignaturePKCS1 {
 
     /**
      * RSA签名
@@ -153,7 +153,7 @@ public class RSASignature {
         byte[] signature = null;
         try {
             //获取privatekey
-            byte[] keyByte = Base64.decode(keycode);
+            byte[] keyByte = Base64Decoder.decode(keycode);
             KeyFactory keyfactory = KeyFactory.getInstance("RSA");
             PKCS8EncodedKeySpec encoderule = new PKCS8EncodedKeySpec(keyByte);
             PrivateKey privatekey = keyfactory.generatePrivate(encoderule);
@@ -165,19 +165,42 @@ public class RSASignature {
 
             signature = sign.sign();
 
-        } catch (NoSuchAlgorithmException | Base64DecodingException | SignatureException | InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException e) {
             e.printStackTrace();
         }
         //将加签后的入参转成16进制
         String terminal = Hex.encodeHexString(signature);
-        return Base64.encode(signature);
+        return Base64Encoder.encode(signature);
+    }
+
+    public static String sign1(String in, PrivateKey privateKey) throws Exception {
+        Signature signa = Signature.getInstance("SHA1WithRSA");
+        //Signature signa = Signature.getInstance("MD5WithRSA");
+        signa.initSign(privateKey);
+        signa.update(in.getBytes());
+        byte[] signdata = signa.sign();
+        return org.apache.commons.codec.binary.Base64.encodeBase64String(signdata);
+    }
+
+    /*
+     * SHA1WithRSA验签
+     */
+    public static boolean isValid1(String in, String signData, PublicKey publicKey) throws Exception {
+        Signature signa = Signature.getInstance("SHA1WithRSA");
+        //Signature signa = Signature.getInstance("MD5WithRSA");
+        signa.initVerify(publicKey);
+        signa.update(in.getBytes());
+
+        byte[] sign_byte = org.apache.commons.codec.binary.Base64.decodeBase64(signData);
+        boolean flag = signa.verify(sign_byte);
+        return flag;
     }
 
     public static boolean verifyWhole(String param, String signature, String keycode) {
         try {
             //获取公钥
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            byte[] keyByte = Base64.decode(keycode);
+            byte[] keyByte = cn.hutool.core.codec.Base64.decode(keycode);
             X509EncodedKeySpec encodeRule = new X509EncodedKeySpec(keyByte);
             PublicKey publicKey = keyFactory.generatePublic(encodeRule);
 
@@ -191,7 +214,7 @@ public class RSASignature {
             //验证签名
             return sign.verify(hexByte);
 
-        } catch (NoSuchAlgorithmException | Base64DecodingException | SignatureException | InvalidKeySpecException | InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeySpecException | InvalidKeyException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -224,36 +247,65 @@ public class RSASignature {
     }
 
     public static void main(String[] args) throws Exception {
-        String str = "app_keyAdcformatjsonrequest{\"EqId\":\"Mark0001\",\"time\":\"2019-06-04 15:21:06\"}methodHeartsign_methodrsa";
-        String pub = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDaKAUkOn2Gpgid1nouXNf66lqawyY5NjCMi+EdYcpbbnJ/fOeh/EFOF0vvMbKtnH8/S5KefbiAOpui9Zu/kO8HMvvveHX1lrX8lfZ5BW7Vz76004zH+GIUUs1+7JG5z2xikTein3WmsAu3+mNmq2BaQ+RQ1lns+Gbm7ECJOcysvwIDAQAB";
-        String sign = "beN0Iu7N7E+taZa7b/tqsYr0wMmAtiV+dJAGfT7oIiV49qImHpmqkdoBbqKHDoKghXRTfTrt2vG+mjte9qMvXgPn401Ou0WxMOxDEDCj96e9c5aecVMPm3deM2R5n1rOqMcpoKjpiZ3ZEapjTeuBjxmqYIq4c6Vv0mut4SG8eSg=";
-        // System.out.println("md5:" + doCheck(str, sign, pub));
 
-        String privateKey = "MIIBOQIBAAJBAIajMDMXjrUEAEoXhIBaLUwN5wRZwwo0enz+W2xyxmxV/XMDxCdx\n" +
-                "hs3ldP2Y9VEgX9Ya4pX+RHD4ZAg/zfHNp4kCAwEAAQJABJduHl/wSvYO+Hfi2em5\n" +
-                "X72dokVZZHCzuK2H+qPTZoBfipRWKMKfJjnFIXnOnAVQ73JA+JLanhD3Ziu4dXMt\n" +
-                "HQIhAMZZrRSTN1F8V2YqqYtQUYOQSSP5vdFjBoL6RQBllQpvAiEArcTvg5WDLnas\n" +
-                "8XkkUoq5cjwPxziBmgH3NZIIPyc8yYcCIC3exzwe34gkrUGfVB43sOIwF/oN42vs\n" +
-                "7rCTmCmDVHhZAiAlUcVK0kJxKSWtWqIVZBu9z+5nj9gttjxccfd5cLjaYwIgbLMv\n" +
-                "zPWjFIITNTm6MnyH8a2fP/jG/JXzFIeBVSh/J2E=";
+        String privateKey = "MIIBOwIBAAJBANKryRATx3iBDQNZR0NvA3UGTLxDaGf0DDQQ4/wECfbEbXGWKKDq\n" +
+                "iOKeWvIBJ+yRc1a+Mm2no8CU2GMnid+s2aECAwEAAQJAP/Z8U29N7t5vzwZ6RpUc\n" +
+                "HZnODpMAzh8g3WYLcmbfh5ZLBlC7cK7deXpCNN99RM8q+h0cL/jrTfyMQjbRva92\n" +
+                "iQIhAOnWOVpsysKyr5N2h8q1zvzF1eNxnL+A+CwGu10/7zWrAiEA5qN4kpeFGgp4\n" +
+                "s+LkTSDHj4jaOswd4/rB03Zy3XFHyeMCIQDfIRPJPVadQnRXehtJSwMgIIdgaODx\n" +
+                "u9cT67iN2pwf0QIhAIbm5PZxc+P4bgNh2gGXA8Lb3DF6BJ29pTOH28XUpZXbAiA4\n" +
+                "Fq4J9sOPQdN8wLBHqO8sFz4jZUe8mRZdlBvfNurUUA==";
 
-        String publicKey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIajMDMXjrUEAEoXhIBaLUwN5wRZwwo0\n" +
-                "enz+W2xyxmxV/XMDxCdxhs3ldP2Y9VEgX9Ya4pX+RHD4ZAg/zfHNp4kCAwEAAQ==";
+        String publicKey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANKryRATx3iBDQNZR0NvA3UGTLxDaGf0\n" +
+                "DDQQ4/wECfbEbXGWKKDqiOKeWvIBJ+yRc1a+Mm2no8CU2GMnid+s2aECAwEAAQ==";
 
-//        String pkcs1 = RsaPkcsTransformer.formatPkcs1ToPkcs8(privateKey);
-//
-//   //     pkcs1 = pkcs1.replaceAll("-----BEGIN RSA PRIVATE KEY-----", "").replaceAll("-----END RSA PRIVATE KEY-----", "");
-//        System.out.println(pkcs1);
-//        System.out.println(sign(pkcs1, privateKey));
-        String privatestr = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBANlx8rhWlKYH54BaTuL8jRuXtssu7zr04O6KvZDTzIycvArF3ohMUcgFIQ4a+JlvN5S1sokmxLTKPr4xrS6xRnaUvIW1qXh5SXvwpBEHPpCoHXqP5zNMftxA2MH4ktPfKBtWpoKLP2DsJ4EpGRr34wP3CrchYbjlYyGdY5lvMcbHAgMBAAECgYAvzDJ0fuOyE2658iABGU7TT+gohaqkpQuEpA7DdSszhYh4PcKK52vasfXwKdGXuLDZCY+zQkhfDU35dOYCq4k3Q84cjiLVe5sFlJNucBgqlEcxrLsUkTuXzNntOWjTpWjAnfUXB7GkvT7ekpnCwqWb8qlUGHzsGioTkTOy0cfIUQJBAPuQmI0EpORqP+v/Vd6SWlxq6Be20hsT5erVpz2Ke1KczbQwRi2ogBpYRMaAmT4kWfsl2hU/hbmESG/yymWS+BMCQQDdR1uCJXSJqu7Urlg4zCa4kBk0rwYYttLJj1jL6d5kKawf9iEgoAElVlRZWWXRnyD4Nesf8n5kTlgtawz+jnT9AkEAi1aP6KwF2S6wsTsAiQNvYXkljN0Ki0z+MJCezYuCu0N2/LMwa+HE8tKpZXmdZ7oizOUuYk6I9zS6GqfUS2aYWQJBAJMjzxK0y1B77IJaSGnEPv89OrWQqNIoR/QlsNsvcWVTXJSIOzERlJF6XW5ohs8kLG1AlU/SFP+oJPRWmfZvThUCQDbM7X6PF+DHa9x2YPEWYYiiThbTGTO1mOxBt2V6GuFqnGHFIa3OeZZpv7SW+aDzTGEmrtByqxRkSd3WpeJzu0I=";
-        String publicstr = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCjyiajomfYD80A7tN8vdeXllTiGrSdocq1nvgceicanNb8QaoNGdAPE6AMuSqnMWs40tj/XoXQmPxNrdUmclwwLJza5Aq5PNqDiFC5QLmIFtATN/n3ymqIYnw78ME8Dv5yjYJs1xk0EL6+1wlFFrylApBWKUGE2c2m2seBY+in5wIDAQAB";
-        String pkcs1 = RsaPkcsTransformer.formatPkcs1ToPkcs8(privateKey);
-        System.out.println(pkcs1);
-        String pri = signWhole(pkcs1, str);
+        String pkcs8 = RsaPkcsTransformer.formatPkcs1ToPkcs8(privateKey);
+        System.out.println(pkcs8);
+        System.out.println("============================================");
+
+
+        Map<String, Object> map = new LinkedHashMap<>(2);
+        Map<String, Object> requestMap = new LinkedHashMap<>(6);
+        requestMap.put("EqId", "WellDevice001");
+        requestMap.put("time", "2019-04-01 15:00:06");
+        requestMap.put("SysVer", "");
+        map.put("app_key", "WellPub");
+        map.put("format", "json");
+        map.put("request", JSONObject.toJSONString(requestMap));
+        map.put("method", "Heart");
+        map.put("sign_method", "rsa");
+        StringBuilder builder = new StringBuilder();
+
+        map.forEach((k, v) -> builder.append(k).append(v));
+
+        System.out.println(builder.toString());
+
+        System.out.println("===================== 拼装数据 =======================");
+
+        // 生成PrivateKey（前提对PKCS1变换为PKCS8）
+        byte[] keyByte = cn.hutool.core.codec.Base64.decode(pkcs8);
+        KeyFactory keyfactory = KeyFactory.getInstance("RSA");
+        PKCS8EncodedKeySpec encodeRule = new PKCS8EncodedKeySpec(keyByte);
+        PrivateKey privatekey = keyfactory.generatePrivate(encodeRule);
+
+        System.out.println("===================== 签名返回 =======================");
+
+
+        String pri = sign1(builder.toString(), privatekey);
         System.out.println(pri);
-       // System.out.println(verifyWhole(str, pri, publicKey));
+        //获取privatekey
 
-     //   DigitalSignatureHelper.sign(str,)
+        System.out.println("===================== 验签返回 =======================");
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        byte[] pubKeyByte = cn.hutool.core.codec.Base64.decode(publicKey);
+        X509EncodedKeySpec pubEncodeRule = new X509EncodedKeySpec(pubKeyByte);
+        PublicKey pubKey = keyFactory.generatePublic(pubEncodeRule);
+        System.out.println(isValid1(builder.toString(), pri, pubKey));
+
+        // System.out.println(verifyWhole(str, pri, publicKey));
+
+        //   DigitalSignatureHelper.sign(str,)
 
 
     }
