@@ -15,12 +15,19 @@ public class CommConstant {
 
     //模板存放位置
 
-    public final static String  TEMPLATE_PATH = "download/";
+    public final static String TEMPLATE_PATH = "download/";
 
     public final static String REDIS_IMPORT_FAIL = "IMPORT:FAIL";
 
-    public final static  String RABBITMQ_PROJECT = "fragment";
+    public final static String RABBITMQ_PROJECT = "fragment";
 
     public final static String MQ_CLIENT_MSG_TYPE = "msgType";
     public final static String MQ_CLIENT_DATA_INFO = "data";
+
+    public final static String IDEMPOTENT_TOKEN_PREFIX = "idempotent:";
+
+    public final static String IDEMPOTENT_TOKEN_PREFIX_HEAD = "idempotentHead";
+
+    public final static String IDEMPOTENT_TOKEN_PARAM = "token";
+
 }
